@@ -1,7 +1,7 @@
 <div class="row g-0 overflow-hidden flex-md-row mb-3 brutalist-card push-on-hover">
     <div class="col-md-auto d-flex justify-content-center align-items-center ps-md-3 py-md-3 pt-3">
         {% if include.project.cover_image contains '.mp4' %}
-        <video src="{% include fix_link.html link=include.project.cover_image %}" class="object-fit-contain" width="270" alt="paper cover" muted autoplay loop></video>
+        <video src="{% include fix_link.html link=include.project.cover_image %}" class="object-fit-contain" width="270" alt="paper cover" muted autoplay loop playsinline></video>
         {% else %}
         <img src="{% include fix_link.html link=include.project.cover_image %}" class="object-fit-contain" width="270" alt="paper cover">
         {% endif %}

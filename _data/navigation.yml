@@ -1,7 +1,7 @@
 - name: Home
   link: /
-- name: Posts
-  link: /posts/
+# - name: Posts
+#   link: /posts/
 - name: Publications
   link: /publications/
 - name: Education

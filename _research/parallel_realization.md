@@ -1,0 +1,48 @@
+---
+title: "Parallel Realization of Symbolic plans"
+published: false
+authors:
+    - name: "Andreu Matoses Gimenez"
+      superscript: "1"
+    - name: "Chris Pek"
+      superscript: "1"
+    - name: "Nils Wilde"
+      superscript: "2"
+    - name: "Javier Alonso-Mora"
+      superscript: "1"
+affiliations:
+    - name: "Delft University of Technology"
+      url: "https://www.tudelft.nl/en"
+      superscript: "1"
+    - name: "Dalhousie University"
+      url: "https://www.dal.ca/"
+      superscript: "2"
+date: 2025-06-01
+# This is the short project description, displayed in the project's card"
+description: "We use a parallelized physics simulator and cross entropy optimization to find optimal realizations of task and motion planning (TAMP) problems. This allows us to consider dynamics, contacts and the low level controllers that the real robot has, and their impact on the optimality and feasibility of the solutions."
+cover_image: /assets/images/papers/realization_of_plans/dingo_isaac.png 
+# Image displayed in the project's card, make it aspect ratio 1x1 (square) for best results, and keep it a reasonable size (like 1-2MB). Can also be a gif
+links: # If you have other website for the project, github repos, datasets, etc. put it here. You can also add an icon from https://icons.getbootstrap.com/
+    - name: Paper
+      icon: bi-file-earmark-pdf
+      url: "https://ieeexplore.ieee.org/abstract/document/10711319"
+    - name: website
+      url: "https://www.canopies-project.eu/"
+    - name: Code
+      icon: bi-github
+      url: "https://github.com/KTH-DHSG/ltl_automaton_core"
+
+gallery_experiments:
+  - "/assets/images/papers/canopies/canopies_rome_test_43_short_good.gif"
+  - "/assets/images/papers/canopies/canopies_rome_test_unload.gif"
+---
+
+## Abstract
+Autonomously performing tasks often requires robots to plan high-level discrete actions and continuous low-level motions to realize them. 
+Task and Motion Planning (TAMP) algorithms solve these hybrid problems together.
+Previous TAMP algorithms have focused mainly on computational performance, completeness, or optimality by making the problem tractable through simplifications and abstractions.
+However, this comes at the cost that the resulting plans may not adequately account for the dynamics or complex contacts necessary to reliably perform the task when manipulation of objects is required. 
+Additionally, approaches that ignore effects of thelow-level controllers may not obtain optimal or feasible plan realizations for the real system. 
+We investigate the use of a GPU-parallelized physics simulator to compute realizations of plans with a motion controller, explicitly accounting for dynamics, and considering contacts with the environment. 
+Using cross-entropy optimization, we sample the parameters of the controllers, or actions, to obtain low-cost solutions. 
+Since our approach uses the same controllers as the real system, the robot can directly execute the computed plans. We demonstrate our approach for a set of tasks where the robot is able to exploit the environment's geometry to move an object.

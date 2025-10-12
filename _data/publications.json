@@ -1,5 +1,30 @@
 [
     {
+        "title": "SADCHER: Scheduling using Attention-based Dynamic Coalitions of Heterogeneous Robots in Real-Time",
+        "authors": [
+            "Jakob Bichler",
+            "Andreu Matoses Gimenez",
+            "Javier Alonso-Mora"
+        ],
+        "date": "2025-10-01",
+        "type": "conference",
+        "venue": "IEEE Int. Symposium on Multi-Robot & Multi-Agent Systems (MRS)",
+        "links": [
+            {
+                "code": "https://github.com/jakbichler",
+                "thesis": "https://resolver.tudelft.nl/uuid:d90491cd-cf57-4d29-b38d-88df646ab301",
+                "web": "https://autonomousrobots.nl/paper_websites/sadcher_MRTA/"
+            }
+        ],
+        "note": null,
+        "image": "/assets/images/papers/sadcher_mrta/opening_image1x1.png",
+        "belongs_to_projects": "interact",
+        "topics":[
+            "task planning", "multi-robot systems"
+        ],
+        "abstract": "Multi-robot task allocation in heterogeneous systems requires efficient scheduling methods that can handle dynamic environments and diverse robot capabilities. This paper presents SADCHER, a novel attention-based approach for scheduling dynamic coalitions of heterogeneous robots in real-time. Our method leverages deep reinforcement learning and attention mechanisms to enable scalable and adaptive task assignment across robot teams with varying capabilities. The approach is validated through extensive simulations and demonstrates significant improvements in task completion rates and system efficiency compared to baseline methods."
+    },     
+    {
         "title": "Decentralized Aerial Manipulation of a Cable-Suspended Load Using Multi-Agent Reinforcement Learning",
         "authors": [
             "Jack Zeng",

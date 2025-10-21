@@ -1,4 +1,3 @@
-version: '3'
 services:
   jekyll:
     image: jekyll/jekyll
@@ -6,5 +5,6 @@ services:
       - .:/srv/jekyll
     ports:
       - "4000:4000"
-    network_mode: host
-    command: jekyll serve --livereload
+    # network_mode: host
+    # command: jekyll serve --livereload
+    command: jekyll serve --host 0.0.0.0 --livereload

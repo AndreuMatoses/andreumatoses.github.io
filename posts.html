@@ -7,7 +7,7 @@ permalink: /posts/
     This is a collection of posts, thoughts, and other miscellanea that I have written over the years. I hope you find them interesting.
 </p>
 
-<div class="posts">
+<div class="posts mt-4">
     {% assign sorted_posts = site.posts | sort: 'date' | reverse %}
     {% if sorted_posts.size == 0 %}
         <p class=" fs-5">Nothing yet! Expect some in the future ...</p>

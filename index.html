@@ -38,15 +38,20 @@ layout: default
     </div>
   </div>
 
-  <h3 class="mt-1">Latest News</h3>
-  <!-- <ul>
-    <li> <strong class="bold">July 2024:</strong> I will be attending RSS at Delft.</li>
-  </ul> -->
-  <p>
-    <strong class="bold">December 2025</strong> | I will be presenting our work "SADCHER: Scheduling using Attention-based Dynamic Coalitions of Heterogeneous Robots in Real-Time" at MRS 2025, Singapore. <br>
-    <strong class="bold">October 2025</strong> | Our workshop paper "Decentralized Aerial Manipulation of Cable-Suspended Load Using Multi-Agent RL" won best poster award at Cooperative Systems and Swarm Robotics in the Era of Generative IA, IROS 2025 <br>
-    <strong class="bold">July 2025</strong> | I will be attending RSS in Los Angeles.<br>
-  </p>
+  <div class="news">
+    <h3 class="mt-1">Latest News</h3>
+    <ul class="news-list">
+      <li>
+        <strong class="bold">December 2025</strong> | I will be presenting our work "SADCHER: Scheduling using Attention-based Dynamic Coalitions of Heterogeneous Robots in Real-Time" at MRS 2025, Singapore.
+      </li>
+      <li>
+        <strong class="bold">October 2025</strong> | Our workshop paper "Decentralized Aerial Manipulation of Cable-Suspended Load Using Multi-Agent RL" won best poster award at Cooperative Systems and Swarm Robotics in the Era of Generative IA, IROS 2025
+      </li>
+      <li>
+        <strong class="bold">July 2025</strong> | I will be attending RSS in Los Angeles.
+      </li>
+    </ul>
+  </div>
 
 </div>
 
@@ -57,7 +62,6 @@ layout: default
 <div class="research-container pt-2" id="research">
   <h2 class="pb-2 mt-2">Research</h2>
 
-    <!-- Create year titles for each distinct year of the master projects -->
     {% for project in projects_sorted %}
     {% unless project.ignore %}
     <!-- Creating a counter in case you need to create unique dropdowns or buttons -->

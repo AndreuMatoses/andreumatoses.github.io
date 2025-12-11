@@ -1,13 +1,13 @@
 ---
 title: "Parallel Realization of Symbolic plans"
-published: false
+published: true
 authors:
     - name: "Andreu Matoses Gimenez"
       superscript: "1"
-    - name: "Chris Pek"
-      superscript: "1"
     - name: "Nils Wilde"
       superscript: "2"
+    - name: "Chris Pek"
+      superscript: "1"
     - name: "Javier Alonso-Mora"
       superscript: "1"
 affiliations:
@@ -17,20 +17,18 @@ affiliations:
     - name: "Dalhousie University"
       url: "https://www.dal.ca/"
       superscript: "2"
-date: 2025-06-01
+date: 2025-11-01
 # This is the short project description, displayed in the project's card"
 description: "We use a parallelized physics simulator and cross entropy optimization to find optimal realizations of task and motion planning (TAMP) problems. This allows us to consider dynamics, contacts and the low level controllers that the real robot has, and their impact on the optimality and feasibility of the solutions."
-cover_image: /assets/images/papers/realization_of_plans/dingo_isaac.png 
+cover_image: /assets/images/papers/realization_of_plans/output_720p_5x.mp4
 # Image displayed in the project's card, make it aspect ratio 1x1 (square) for best results, and keep it a reasonable size (like 1-2MB). Can also be a gif
 links: # If you have other website for the project, github repos, datasets, etc. put it here. You can also add an icon from https://icons.getbootstrap.com/
     - name: Paper
       icon: bi-file-earmark-pdf
       url: "https://ieeexplore.ieee.org/abstract/document/10711319"
-    - name: website
-      url: "https://www.canopies-project.eu/"
-    - name: Code
+    - name: Code (Coming soon)
       icon: bi-github
-      url: "https://github.com/KTH-DHSG/ltl_automaton_core"
+      url: ""
 
 gallery_experiments:
   - "/assets/images/papers/canopies/canopies_rome_test_43_short_good.gif"

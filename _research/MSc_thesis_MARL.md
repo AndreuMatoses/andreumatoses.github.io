@@ -10,7 +10,7 @@ affiliations:
       url: "https://kth.se"
 date: 2023-06-01
 # This is the short project description, displayed in the project's card"
-description: "Scalable multi-agent reinforcement learning for formation control with collision avoidance. This work was my Master's Thesis while at KTH Royal Institute of Technology."
+description: "Scalable multi-agent reinforcement learning for formation control with collision avoidance. This work was my Master's Thesis while at KTH Royal Institute of Technology. The proposed method exploits the reward structure to enable local approximation of Q-functions and policy gradients, allowing for scalable training. We compare discrete and continuous policies and analyze the impact of the sensing radius on performance and collision avoidance."
 cover_image: /assets/images/papers/msc_thesis/n10_good.gif # Image displayed in the project's card, make it aspect ratio 1x1 (square) for best results, and keep it a reasonable size (like 1-2MB). Can also be a gif
 links: # If you have other website for the project, github repos, datasets, etc. put it here. You can also add an icon from https://icons.getbootstrap.com/
     - name: Paper

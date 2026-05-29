@@ -23,9 +23,12 @@ description: "We use a parallelized physics simulator and cross entropy optimiza
 cover_image: /assets/images/papers/realization_of_plans/output_720p_5x.mp4 
 # Image displayed in the project's card, make it aspect ratio 1x1 (square) for best results, and keep it a reasonable size (like 1-2MB). Can also be a gif
 links: # If you have other website for the project, github repos, datasets, etc. put it here. You can also add an icon from https://icons.getbootstrap.com/
+    - name: IEEE Xplore
+      icon: bi-xbox
+      url: "https://ieeexplore.ieee.org/document/11486591"
     - name: Paper
       icon: bi-file-earmark-pdf
-      url: "/assets/files/papers/parallel_realization_arxiv_submission_dec2025.pdf"
+      url: "/assets/files/papers/Parallel_realization_RAL_final_arxiv_version.pdf"
     - name: ArXiv
       icon: bi-file-earmark-text
       url: "https://arxiv.org/abs/2512.11571"
@@ -40,10 +43,12 @@ gallery_experiments:
   - "/assets/images/papers/canopies/canopies_rome_test_43_short_good.gif"
   - "/assets/images/papers/canopies/canopies_rome_test_unload.gif"
 ---
+<!-- Comment on the paper being accepted in RA-L -->
+ <p>The paper has been accepted for publication in IEEE Robotics and Automation Letters (RA-L).</p>
 
 <div class="ratio ratio-16x9 mb-3">
   <video controls autoplay loop muted>
-    <source src="/assets/images/papers/realization_of_plans/RAL_video_3_short_low_res.mp4" type="video/mp4">
+    <source src="/assets/images/papers/realization_of_plans/RAL_video_FINAL_2_720p.mp4" type="video/mp4">
   </video>
 </div>
 
@@ -53,7 +58,7 @@ gallery_experiments:
   Task and Motion Planning (TAMP) algorithms solve these hybrid problems together.
   Previous TAMP algorithms have focused mainly on computational performance, completeness, or optimality by making the problem tractable through simplifications and abstractions.
   However, this comes at the cost that the resulting plans may not adequately account for the dynamics or complex contacts necessary to reliably perform the task when manipulation of objects is required. 
-  Additionally, approaches that ignore effects of thelow-level controllers may not obtain optimal or feasible plan realizations for the real system. 
+  Additionally, approaches that ignore effects of the low-level controllers may not obtain optimal or feasible plan realizations for the real system. 
   We investigate the use of a GPU-parallelized physics simulator to compute realizations of plans with a motion controller, explicitly accounting for dynamics, and considering contacts with the environment. 
   Using cross-entropy optimization, we sample the parameters of the controllers, or actions, to obtain low-cost solutions. 
   Since our approach uses the same controllers as the real system, the robot can directly execute the computed plans. We demonstrate our approach for a set of tasks where the robot is able to exploit the environment's geometry to move an object.

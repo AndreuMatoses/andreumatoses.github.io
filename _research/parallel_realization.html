@@ -38,28 +38,210 @@ links: # If you have other website for the project, github repos, datasets, etc.
     - name: Video (Coming soon)
       icon: bi-youtube
       url: ""
+note: "Published in IEEE Robotics and Automation Letters (RA-L)."
+usemathjax: true
 
 gallery_experiments:
   - "/assets/images/papers/canopies/canopies_rome_test_43_short_good.gif"
   - "/assets/images/papers/canopies/canopies_rome_test_unload.gif"
 ---
-<!-- Comment on the paper being accepted in RA-L -->
- <p>The paper has been accepted for publication in IEEE Robotics and Automation Letters (RA-L).</p>
 
-<div class="ratio ratio-16x9 mb-3">
-  <video controls autoplay loop muted>
-    <source src="/assets/images/papers/realization_of_plans/RAL_video_FINAL_2_720p.mp4" type="video/mp4">
-  </video>
+<div class="row g-3 mb-4">
+  <div class="col-md-6">
+    <div class="ratio ratio-16x9">
+      <video class="w-100 h-100 object-fit-cover" autoplay loop muted playsinline controls preload="metadata">
+        <source src="/assets/images/papers/realization_of_plans/videos/phone_ramp_teaser.mp4" type="video/mp4">
+      </video>
+    </div>
+    <p class="text-muted small mt-2 mb-0">Pick-and-place teaser with ramp dynamics.</p>
+  </div>
+  <div class="col-md-6">
+    <div class="ratio ratio-16x9">
+      <video class="w-100 h-100 object-fit-cover" autoplay loop muted playsinline controls preload="metadata">
+        <source src="/assets/images/papers/realization_of_plans/videos/stick_and_box_teaser.mp4" type="video/mp4">
+      </video>
+    </div>
+    <p class="text-muted small mt-2 mb-0">Move-and-push teaser with contact-rich manipulation.</p>
+  </div>
 </div>
 
 <h2>Abstract</h2>
 <p>
-  Autonomously performing tasks often requires robots to plan high-level discrete actions and continuous low-level motions to realize them. 
+  Autonomously performing tasks often requires robots to plan high-level discrete actions and continuous low-level motions to realize them.
   Task and Motion Planning (TAMP) algorithms solve these hybrid problems together.
   Previous TAMP algorithms have focused mainly on computational performance, completeness, or optimality by making the problem tractable through simplifications and abstractions.
-  However, this comes at the cost that the resulting plans may not adequately account for the dynamics or complex contacts necessary to reliably perform the task when manipulation of objects is required. 
-  Additionally, approaches that ignore effects of the low-level controllers may not obtain optimal or feasible plan realizations for the real system. 
-  We investigate the use of a GPU-parallelized physics simulator to compute realizations of plans with a motion controller, explicitly accounting for dynamics, and considering contacts with the environment. 
-  Using cross-entropy optimization, we sample the parameters of the controllers, or actions, to obtain low-cost solutions. 
+  However, this comes at the cost that the resulting plans may not adequately account for the dynamics or complex contacts necessary to reliably perform the task when manipulation of objects is required.
+  Additionally, approaches that ignore effects of the low-level controllers may not obtain optimal or feasible plan realizations for the real system.
+  We investigate the use of a GPU-parallelized physics simulator to compute realizations of plans with a motion controller, explicitly accounting for dynamics, and considering contacts with the environment.
+  Using cross-entropy optimization, we sample the parameters of the controllers, or actions, to obtain low-cost solutions.
   Since our approach uses the same controllers as the real system, the robot can directly execute the computed plans. We demonstrate our approach for a set of tasks where the robot is able to exploit the environment's geometry to move an object.
 </p>
+
+<h2>Method overview</h2>
+<div class="row g-3 mb-4">
+  <div class="col-12">
+    <img src="/assets/images/papers/realization_of_plans/method_diagram_small.jpg" class="img-fluid d-block mx-auto" style="max-width: 700px;" alt="Method overview diagram">
+  </div>
+  <div class="col-12">
+    <div class="row g-2">
+      <div class="col-md-4">
+        <div class="d-flex gap-2">
+          <span class="fw-semibold">1.</span>
+          <span><strong>Symbolic planning:</strong> Generate candidate symbolic plans from available symbols and initial parameters.</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="d-flex gap-2">
+          <span class="fw-semibold">2.</span>
+          <span><strong>Simulation and optimization:</strong> Simulate plans in parallel, evaluate costs, and update parameters with cross-entropy optimization.</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="d-flex gap-2">
+          <span class="fw-semibold">3.</span>
+          <span><strong>Result:</strong> After convergence, deploy the best feasible plan using the same low-level controllers.</span>
+        </div>
+      </div>
+    </div>
+    <p class="mb-0 text-muted small mt-2">* We use geometric fabrics for fast, GPU-parallelizable motion of the base and arm with end-effector pose control and collision avoidance.
+      For mobile base path planning only, we use A* with a a parallelized GPU waypoint tracking algorithm. The simulation is implemented in NVIDIA Isaac gym. 
+    </p>
+  </div>
+</div>
+
+<h2>P1: Pick and Place with an obstacle in the middle</h2>
+<div class="row g-3 align-items-start">
+  <div class="col-lg-6 order-2 order-lg-1">
+    <h3 class="h5">Setting</h3>
+    <p>Two tables are separated by an obstacle. A graspable <span style="color: #b58900; font-weight: 600;">cube</span> starts on Table 1. The obstacle geometry may help or hinder the task.</p>
+    <h3 class="h5">Goal</h3>
+    <p>Place the <span style="color: #b58900; font-weight: 600;">cube</span> on <span style="color: #0f766e; font-weight: 600;">Table 2</span> and move the robot to the <span style="color: #0f766e; font-weight: 600;">Exit</span> region while minimizing time.</p>
+  </div>
+  <div class="col-lg-6 order-1 order-lg-2">
+    <div class="ratio ratio-16x9">
+      <img src="/assets/images/papers/realization_of_plans/diagram_4_actions.png" class="w-100 h-100 object-fit-contain bg-white" alt="Pick and place setup diagram">
+    </div>
+  </div>
+</div>
+
+<h3 class="h5 mt-3">Symbolic plan</h3>
+<div class="my-2">
+  $$
+  \begin{aligned}
+  \pi_{p\&p} =&\; \mathrm{moveTo}(Start, \textcolor{#0f766e}{\mathbf{Table_1}}),\; \mathrm{grasp}(\textcolor{#b58900}{\mathbf{Cube}}, Table_1), \\
+  &\; \mathrm{moveTo}(Table_1, \textcolor{#0f766e}{\mathbf{Table_2}}),\; \mathrm{place}(\textcolor{#b58900}{\mathbf{Target}}, Table_2),\; \mathrm{moveTo}(Table_2, \textcolor{#0f766e}{\mathbf{Exit}})
+  \end{aligned}
+  $$
+</div>
+
+<h3 class="mt-5">Cross-entropy optimization and best simulation</h3>
+<div class="row g-3 mt-2">
+  <div class="col-lg-6">
+    <h4 class="h6 text-uppercase text-body-secondary">Case 1: Rectangular obstacle</h4>
+    <p>The robot routes around the obstacle. Alternative paths exist, but take longer.</p>
+    <div class="ratio ratio-4x3">
+      <video class="w-100 h-100 object-fit-cover border border-secondary" autoplay loop muted playsinline controls preload="metadata">
+        <source src="/assets/images/papers/realization_of_plans/videos/ce_pick_and_place_rectangle.mp4" type="video/mp4">
+      </video>
+    </div>
+    <p class="text-muted small mt-2">Cross-entropy optimization rollouts.</p>
+    <div class="ratio ratio-16x9 mt-3">
+      <video class="w-100 h-100 object-fit-cover" autoplay loop muted playsinline controls preload="metadata">
+        <source src="/assets/images/papers/realization_of_plans/videos/x3_PandP_rectangle_obstacle.mp4" type="video/mp4">
+      </video>
+    </div>
+    <p class="text-muted small mt-2">Best simulated realization.</p>
+  </div>
+  <div class="col-lg-6">
+    <h4 class="h6 text-uppercase text-body-secondary">Case 2: Ramp obstacle</h4>
+    <p>The ramp lets the cube slide to Table 2, shortening the robot path to the exit.</p>
+    <div class="ratio ratio-4x3">
+      <video class="w-100 h-100 object-fit-cover border border-secondary" autoplay loop muted playsinline controls preload="metadata">
+        <source src="/assets/images/papers/realization_of_plans/videos/ce_pick_and_place_ramp.mp4" type="video/mp4">
+      </video>
+    </div>
+    <p class="text-muted small mt-2">Cross-entropy optimization rollouts.</p>
+    <div class="ratio ratio-16x9 mt-3">
+      <video class="w-100 h-100 object-fit-cover" autoplay loop muted playsinline controls preload="metadata">
+        <source src="/assets/images/papers/realization_of_plans/videos/x3_PandP_ramp_obstacle.mp4" type="video/mp4">
+      </video>
+    </div>
+    <p class="text-muted small mt-2">Best simulated realization.</p>
+  </div>
+</div>
+
+<h3 class="mt-4">Real-world execution for Case 2: Ramp obstacle</h3>
+<div class="ratio ratio-16x9">
+  <video class="w-100 h-100 object-fit-cover" autoplay loop muted playsinline controls preload="metadata">
+    <source src="/assets/images/papers/realization_of_plans/videos/p_and_p_real.mp4" type="video/mp4">
+  </video>
+</div>
+<p class="text-muted small mt-2">Ramp setup executed on the real robot.</p>
+
+<h2>P2: Move and Push</h2>
+<div class="row g-3 align-items-start">
+  <div class="col-lg-6 order-2 order-lg-1">
+    <h3 class="h5">Setting</h3>
+    <p>A vertical stick with a <span style="color: #b42318; font-weight: 600;">red cube</span> on top stands near an open box.</p>
+    <h3 class="h5">Goal</h3>
+    <p>Push the stick so the cube falls inside the box while minimizing time.</p>
+    <p>We denote the stick location as <span style="color: #0f766e; font-weight: 600;">$\mathbf{rod_{loc}}$</span> and the push target as <span style="color: #b58900; font-weight: 600;">$\mathbf{rod_{p}}$</span>.</p>
+  </div>
+  <div class="col-lg-6 order-1 order-lg-2">
+    <div class="ratio ratio-4x3">
+      <img src="/assets/images/papers/realization_of_plans/move_and_push_diagram.png" class="w-100 h-100 object-fit-contain bg-white" alt="Move and push setup diagram">
+    </div>
+  </div>
+</div>
+
+<h3 class="h5 mt-3">Symbolic plan</h3>
+<div class="my-2">
+  $$
+  \pi_{m\&p} = \mathrm{moveTo}(Start, \textcolor{#0f766e}{\mathbf{rod_{loc}}}),\; \mathrm{push}(rod_{loc}, \textcolor{#b58900}{\mathbf{rod_{p}}})
+  $$
+</div>
+
+<h3 class="mt-5">Cross-entropy optimization and best simulation</h3>
+<div class="row g-3 mt-2">
+  <div class="col-lg-6">
+    <h4 class="h6 text-uppercase text-body-secondary">Case 1: Box between robot and stick</h4>
+    <p>The robot routes around the box and pushes the stick with minimal extra motion.</p>
+    <div class="ratio ratio-4x3">
+      <video class="w-100 h-100 object-fit-cover border border-secondary" autoplay loop muted playsinline controls preload="metadata">
+        <source src="/assets/images/papers/realization_of_plans/videos/ce_push_stick_left_box_between.mp4" type="video/mp4">
+      </video>
+    </div>
+    <p class="text-muted small mt-2">Cross-entropy optimization rollouts.</p>
+    <div class="ratio ratio-16x9 mt-3">
+      <video class="w-100 h-100 object-fit-cover" autoplay loop muted playsinline controls preload="metadata">
+        <source src="/assets/images/papers/realization_of_plans/videos/x3_push_stick_on_left.mp4" type="video/mp4">
+      </video>
+    </div>
+    <p class="text-muted small mt-2">Best simulated realization.</p>
+  </div>
+  <div class="col-lg-6">
+    <h4 class="h6 text-uppercase text-body-secondary">Case 2: Stick on the right</h4>
+    <p>The robot approaches from the correct angle and pushes directly.</p>
+    <div class="ratio ratio-4x3">
+      <video class="w-100 h-100 object-fit-cover border border-secondary" autoplay loop muted playsinline controls preload="metadata">
+        <source src="/assets/images/papers/realization_of_plans/videos/ce_push_stick_right.mp4" type="video/mp4">
+      </video>
+    </div>
+    <p class="text-muted small mt-2">Cross-entropy optimization rollouts.</p>
+    <div class="ratio ratio-16x9 mt-3">
+      <video class="w-100 h-100 object-fit-cover" autoplay loop muted playsinline controls preload="metadata">
+        <source src="/assets/images/papers/realization_of_plans/videos/x3_push_stick_on_right.mp4" type="video/mp4">
+      </video>
+    </div>
+    <p class="text-muted small mt-2">Best simulated realization.</p>
+  </div>
+</div>
+
+<h3 class="mt-4">Real-world execution for Case 2: Stick on the right</h3>
+<div class="ratio ratio-16x9">
+  <video class="w-100 h-100 object-fit-cover" autoplay loop muted playsinline controls preload="metadata">
+    <source src="/assets/images/papers/realization_of_plans/videos/push_real.mp4" type="video/mp4">
+  </video>
+</div>
+<p class="text-muted small mt-2">Stick on the right, robot starts in front of both objects.</p>
+

@@ -38,6 +38,12 @@ layout: default
     {% endfor %}
 </div>
 
+<!-- Now we display the paper's note, if it exists. This is just a subtitle where it says the published venue and/or award -->
+{% if page.note %}
+<div class="d-flex justify-content-center align-items-center px-1 px-lg-5 mt-2 mt-lg-3">
+    <span class="text-body-tertiary me-3 fs-6">{{ page.note }}</span>
+</div>
+{% endif %}
 
 <div class="paper-body mt-4 px-0 row justify-content-center">
     <div class="col-md-10">

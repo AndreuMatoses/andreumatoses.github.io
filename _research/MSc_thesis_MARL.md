@@ -1,5 +1,6 @@
 ---
 title: "Scalable Multi-Agent Reinforcement Learning for Collision Avoidance"
+venue: "Master's Thesis, KTH Royal Institute of Technology"
 authors:
     - name: "Andreu Matoses Gimenez"
       url: "https://andreumatoses.github.io/"

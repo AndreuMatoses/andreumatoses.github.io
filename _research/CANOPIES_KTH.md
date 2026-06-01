@@ -1,5 +1,6 @@
 ---
 title: "Linear Temporal Logic (LTL) Planner for Agricultural Robotics"
+venue: "IEEE International Conference on Automation Science and Engineering (CASE) 2024"
 authors:
     - name: "Shankar Deka"
       superscript: "1"
@@ -41,7 +42,7 @@ links: # If you have other website for the project, github repos, datasets, etc.
     - name: Paper
       icon: bi-file-earmark-pdf
       url: "https://ieeexplore.ieee.org/abstract/document/10711319"
-    - name: website
+    - name: ERC website
       url: "https://www.canopies-project.eu/"
     - name: Code
       icon: bi-github

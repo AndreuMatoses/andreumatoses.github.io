@@ -1,5 +1,6 @@
 ---
 title: "ALPHA, a high altitude UAV"
+venue: "International Conference on Aeronautical Sciences (ICAS) 2022"
 authors:
     - name: "Victor Nan Fernandez-Ayala"
     - name: "László Vimláti"
@@ -21,7 +22,7 @@ links: # If you have other website for the project, github repos, datasets, etc.
     - name: Paper
       icon: bi-file-earmark-pdf
       url: "/"
-    - name: Website
+    - name: Offcial website
       url: "https://www.kthaero.com/alpha"
 ---
 

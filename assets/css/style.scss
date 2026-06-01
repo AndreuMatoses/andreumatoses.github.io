@@ -175,4 +175,21 @@ h2 {
         margin-bottom: 0.5rem;
     }
 }
-  
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+}
+
+.link-underline-hover {
+    transition: text-decoration 0.2s ease, text-underline-offset 0.2s ease;
+    
+    &:hover {
+        text-decoration: underline !important;
+        text-underline-offset: 3px;
+        color: #000 !important;
+    }
+}

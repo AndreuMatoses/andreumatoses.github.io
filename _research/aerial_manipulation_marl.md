@@ -1,5 +1,6 @@
 ---
 title: "Decentralized Aerial Manipulation of a Cable-Suspended Load Using Multi-Agent Reinforcement Learning"
+venue: "Conference on Robot Learning (CoRL) 2025. Best poster award at MACRAI workshop, IROS 2025."
 authors:
     - name: "Jack Zeng"
       url: "https://jackzeng-robotics.github.io/"
@@ -27,9 +28,9 @@ date: 2025-08-01 # publication or relevant date, approximated if not sure. Just 
 description: "Decentralized MARL for 6-DoF control of a cable-suspended load with multiple MAVs, requiring no inter-drone communication and enabling scalable, onboard deployment. Combined with low-level controllers, it transfers robustly from simulation to reality, matching centralized performance while tolerating uncertainties and even loss of a drone."
 cover_image: /assets/images/papers/marl_drones_manipulation/combined_video.mp4
 links: # If you have other website for the project, github repos, datasets, etc. put it here. You can also add an icon from https://icons.getbootstrap.com/
-    - name: CoRL paper (coming soon)
+    - name: CoRL paper
       icon: bi-file-text
-      url: ""
+      url: "https://proceedings.mlr.press/v305/zeng25a.html"
     - name: arXiv
       icon: bi-file-earmark-pdf
       url: "https://arxiv.org/abs/2508.01522"

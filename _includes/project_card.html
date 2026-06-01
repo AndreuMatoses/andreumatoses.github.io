@@ -1,9 +1,13 @@
 <div class="row g-0 overflow-hidden flex-md-row mb-3 brutalist-card push-on-hover">
-    <div class="col-md-auto d-flex justify-content-center align-items-center ps-md-3 py-md-3 pt-3 project-card-image-container">
+    <div
+        class="col-md-auto d-flex justify-content-center align-items-center ps-md-3 py-md-3 pt-3 project-card-image-container">
         {% if include.project.cover_image contains '.mp4' %}
-        <video src="{% include fix_link.html link=include.project.cover_image %}" class="object-fit-contain project-card-media" width="270" alt="paper cover" muted autoplay loop playsinline></video>
+        <video src="{% include fix_link.html link=include.project.cover_image %}"
+            class="object-fit-contain project-card-media" width="270" alt="paper cover" muted autoplay loop
+            playsinline></video>
         {% else %}
-        <img src="{% include fix_link.html link=include.project.cover_image %}" class="object-fit-contain project-card-media" width="270" alt="paper cover">
+        <img src="{% include fix_link.html link=include.project.cover_image %}"
+            class="object-fit-contain project-card-media" width="270" alt="paper cover">
         {% endif %}
     </div>
     <div class="col-md p-3 ps-md-3 d-flex flex-column position-static">
@@ -12,23 +16,27 @@
         <div class="mb-1 text-body-secondary small">
             <!-- add names of authors -->
             {% for person in include.project.authors %}
-            {{ person.name }}  {% if forloop.last == false %} , {% endif %}
+            {{ person.name }} {% if forloop.last == false %} , {% endif %}
             {% endfor %}
             | {{ include.project.date | date: "%B %Y" }} {{ include.project.release_date | date: "%B %Y" }}
         </div>
-        <p class="mb-auto">{{ include.project.description }}</p>
-        <div class="d-flex justify-content-start gap-2">
-            <!-- {% for link in include.project.links %}
-            <a href="{{ link.url }}" class="btn btn-sm btn-dark rounded-pill mb-2">
-                {% if link.icon %}
-                <i class="bi {{ link.icon }}"> </i>
-                {% endif %}
-                {{ link.name }}
-            </a>
-            {% endfor %} -->
-            <a href="{{ include.project.url | relative_url }}" class="icon-link gap-1 icon-link-hover stretched-link text-decoration-none">
-                More <i class="bi bi-arrow-right"></i>
-            </a>
+        {% if include.project.venue %}
+        <div class="mb-2 text-body-secondary small fst-italic">
+            {{ include.project.venue }}
         </div>
+        {% endif %}
+        <p class="mb-auto line-clamp-3">{{ include.project.description }}</p>
+
+        <div class="mt-2 text-body-secondary small fw-bold position-relative" style="z-index: 2;">
+            <a href="{{ include.project.url | relative_url }}"
+                class="text-decoration-none text-reset link-underline-hover">website</a>
+            {% if include.project.links %}
+            {% for link in include.project.links %}
+            <span class="mx-1">/</span><a href="{{ link.url }}" target="_blank"
+                class="text-decoration-none text-reset link-underline-hover">{{ link.name | downcase }}</a>
+            {% endfor %}
+            {% endif %}
+        </div>
+        <a href="{{ include.project.url | relative_url }}" class="stretched-link" aria-label="Project details"></a>
     </div>
 </div>

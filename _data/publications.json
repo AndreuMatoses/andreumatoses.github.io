@@ -32,6 +32,7 @@
         "venue": "IEEE Int. Symposium on Multi-Robot & Multi-Agent Systems (MRS)",
         "links": [
             {
+                "arXiv": "https://arxiv.org/abs/2510.14851",
                 "code": "https://github.com/jakbichler",
                 "thesis": "https://resolver.tudelft.nl/uuid:d90491cd-cf57-4d29-b38d-88df646ab301",
                 "web": "https://autonomousrobots.nl/paper_websites/sadcher_MRTA/"

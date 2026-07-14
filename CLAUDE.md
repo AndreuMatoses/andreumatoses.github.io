@@ -140,3 +140,11 @@ Be critical about these rather than copying the pattern:
   `layout:` manually unless you need a specific one.
 - Route every local asset/file link through `fix_link.html` or `relative_url`.
 - Don't hand-edit generated output (`_site/`, compiled `*.css`); `_site/` is gitignored.
+
+## Git workflow
+
+- Small fixes (docs, typos, content edits, small tweaks) can be committed and
+  pushed **directly to `main`** — no branch/PR needed. Pushing to `main` triggers
+  the Pages deploy.
+- Only create a feature branch (and PR) for **significant** changes — new
+  sections/layouts, restructuring, or anything you'd want to review before it goes live.

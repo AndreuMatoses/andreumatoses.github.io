@@ -39,7 +39,7 @@ GitHub pages builds the website upon pushing to the `main` branch. However, if y
 3. Run the following command in the root directory of the repository:
 
     ```shell
-    docker-compose up
+    docker compose up
     ```
 
 This will launch the website at `http://localhost:4000` with live-reload enabled. Hence, you should be able to make changes to any file and they should appear automatically on your local instance upon saving that file.

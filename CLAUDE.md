@@ -112,10 +112,10 @@ Be critical about these rather than copying the pattern:
   Academic" theme, is never loaded by any layout, and references a `publications`
   array / `publications-container` element that don't exist. The real publications
   search is the inline `<script>` at the bottom of `publications.html`. Safe to delete.
-- **Broken/inconsistent contact email.** `_data/socials.yml` uses
-  `mailto:J.A.MatosesGimenez (at) tudelft.nl` — the literal " (at) " makes it an
-  invalid `mailto:`, and it disagrees with the `A.MatosesGimenez` shown in `index.html`
-  (note the stray `J.`). Pick one real address; use a real `@` in `mailto:` links.
+- **Contact email:** `_data/socials.yml` uses a real `mailto:A.MatosesGimenez@tudelft.nl`.
+  `index.html` still shows the address as display text with a literal `(at)` — that's
+  intentional light anti-scraping obfuscation and is fine for *display* text, but never
+  put `(at)` inside a `mailto:` href (it breaks the link).
 - **`Public Sans` font is fetched but never used** (loaded in `base.html`, absent from
   the SCSS). Drop it from the Google Fonts URL to save a request.
 - **`bootstrap.css.map` (~680 KB) is committed** — a sourcemap that ships nothing at

@@ -15,7 +15,7 @@ served as a page at `/readme/`). This file is the maintainer/AI-facing map.
 ## Running locally
 
 ```shell
-docker-compose up   # serves http://localhost:4000 with livereload
+docker compose up   # serves http://localhost:4000 with livereload
 ```
 
 Uses the `jekyll/jekyll` Docker image, so no local Ruby needed. `Gemfile` pins

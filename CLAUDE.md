@@ -147,3 +147,6 @@ Be critical about these rather than copying the pattern:
   the Pages deploy.
 - Only create a feature branch (and PR) for **significant** changes — new
   sections/layouts, restructuring, or anything you'd want to review before it goes live.
+- **Batch edits into one themed commit.** Every push to `main` retriggers the Pages
+  build, so don't commit/push after each small edit — group related changes and commit
+  once when a coherent chunk of work is done. Push when the batch is ready, not per-file.

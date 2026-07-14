@@ -23,6 +23,15 @@ the `github-pages` gem to match Pages' environment. Note the local Ruby toolchai
 in this container is too new for the pinned Jekyll 3.x, so prefer Docker (or just
 trust the Pages build) over `bundle exec jekyll` here.
 
+**Local build ≠ Pages build.** The vanilla `jekyll/jekyll` image does *not* run the
+plugins GitHub Pages injects (`jekyll-optional-front-matter`, `jekyll-readme-index`,
+`jekyll-relative-links`, `jekyll-titles-from-headings`, …). The big gotcha:
+`jekyll-optional-front-matter` renders markdown files **even without front matter**
+through Liquid on Pages. So any `.md` containing `{% … %}`/`{{ … }}` (e.g. this file's
+include examples) is parsed as real Liquid on Pages and can crash the build, even
+though it's copied verbatim locally. Dev-only markdown like `CLAUDE.md` is therefore
+listed under `exclude:` in `_config.yml`. If you add another such doc, exclude it too.
+
 ## Layout of the codebase
 
 ```

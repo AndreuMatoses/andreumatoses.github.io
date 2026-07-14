@@ -41,8 +41,8 @@ show_search: true
 <!-- We loop over the years, then entries of each type in the data/publications file and display the publications -->
 <div class="row {% unless page.show_search %}d-none{% endunless %}">
     <div class="input-group mb-3">
-        <input type="text" class="form-control w-auto" placeholder="Search by author, title, ..." id="search-input">
-        <select class="form-select" id="year-select" style="width: 50;">
+        <input type="text" class="form-control" placeholder="Search by author, title, ..." id="search-input">
+        <select class="form-select w-auto flex-grow-0" id="year-select">
             <option value="">All Years</option>
             {% for year in years %}
                 <option value="{{ year }}">{{ year }}</option>

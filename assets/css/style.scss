@@ -114,6 +114,14 @@ ul.timeline > li:before {
     }
 }
 
+// MathJax display equations: scroll horizontally on narrow screens instead of
+// overflowing the page (MathJax 3 does not line-wrap display math).
+mjx-container[display="true"] {
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-width: 100%;
+}
+
 h2 {
     margin-top: 30px;
 }

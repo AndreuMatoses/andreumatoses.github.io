@@ -149,6 +149,23 @@ Be critical about these rather than copying the pattern:
 - Route every local asset/file link through `fix_link.html` or `relative_url`.
 - Don't hand-edit generated output (`_site/`, compiled `*.css`); `_site/` is gitignored.
 
+## Media (images / videos)
+
+Videos are plain `<video>` tags pointing at files under `assets/images/papers/…`.
+Two encoding gotchas that make a video show as a **gray, unplayable box** in browsers
+even though the file is fine locally:
+- **H.264 level too high.** Browsers refuse to decode a stream whose level exceeds
+  their decoder's support. A bogus/huge frame-rate tag (e.g. a phone export claiming
+  1200 fps) inflates the level to 6.0. Keep videos at a normal fps and level ≤ 4.x.
+- Prefer web-safe encodes: H.264 **High/Main, `yuv420p`, level ≤ 4.0, 30–60 fps**, and
+  `-movflags +faststart`. Re-encode with:
+  `ffmpeg -i in.mp4 -r 60 -c:v libx264 -profile:v high -level 4.0 -pix_fmt yuv420p -crf 23 -an -movflags +faststart out.mp4`
+
+For responsive images capped at a max width, put the cap on a wrapper div
+(`<div class="mx-auto" style="max-width:700px">`) and keep the `<img>` as `img-fluid` —
+don't put a fixed `max-width` inline on an `img-fluid` image, it overrides the `100%`
+cap and the image stops shrinking on phones.
+
 ## Git workflow
 
 - Small fixes (docs, typos, content edits, small tweaks) can be committed and

@@ -1,0 +1,260 @@
+---
+title: "Flow Policies as Actions of Skill-Level World Models: Learned and Symbolic Abstractions for Long-Horizon Planning"
+published: true
+venue: "Submitted to the IEEE International Conference on Robotics and Automation (ICRA) 2027"
+authors:
+    - name: "Andreu Matoses Gimenez"
+      superscript: "1,*"
+    - name: "Andrei-Carlo Papuc"
+      url: "https://andreicarlo.com/"
+      superscript: "1,*"
+    - name: "Chris Pek"
+      superscript: "1"
+    - name: "Javier Alonso-Mora"
+      superscript: "1"
+affiliations:
+    - name: "Delft University of Technology"
+      url: "https://www.tudelft.nl/en"
+      superscript: "1"
+date: 2026-09-16
+# This is the short project description, displayed in the project's card
+description: "A world model that steps over whole skills: each action is the input of a flow-matching policy, so one policy execution is one world-model transition. We compare four action abstractions, from a compressed noise seed to a symbolic label, under one world model and one planner, on block rearrangement tasks of up to 14 skills."
+cover_image: /assets/images/papers/flow_skill_wm/videos/cover_4x3.mp4
+# Image displayed in the project's card, make it aspect ratio 1x1 (square) for best results, and keep it a reasonable size (like 1-2MB). Can also be a gif
+links: # If you have other website for the project, github repos, datasets, etc. put it here. You can also add an icon from https://icons.getbootstrap.com/
+    - name: Paper
+      icon: bi-file-earmark-pdf
+      url: "/assets/files/papers/flow_skill_wm_icra27.pdf"
+    - name: Poster
+      icon: bi-easel
+      url: "/assets/images/papers/flow_skill_wm/poster.jpg"
+    - name: Code
+      icon: bi-github
+      url: "https://github.com/AndreuMatoses/flow_abstract_wm"
+note: "* Equal contribution. Submitted to ICRA 2027."
+usemathjax: true
+---
+
+<div class="mb-4">
+  <div class="ratio ratio-16x9">
+    <video class="w-100 h-100 object-fit-contain bg-black" controls playsinline preload="metadata">
+      <source src="/assets/images/papers/flow_skill_wm/icra27_final_video_submission_v2_compressed.mp4" type="video/mp4">
+    </video>
+  </div>
+  <p class="text-muted small mt-2 mb-0">Summary video of the paper.</p>
+</div>
+
+<h2>Abstract</h2>
+<p>
+  Latent world models enable robots to plan by predicting the consequences of actions.
+  Planning long tasks with control-rate actions requires many prediction steps, which enlarges the search space and accumulates error.
+  Skill-level actions shorten these sequences, but a symbolic skill vocabulary requires domain knowledge and labeled demonstrations.
+  We construct skill-level actions from the inputs of a flow-matching policy trained on demonstrations segmented into complete skills.
+  The policy maps a noise seed and an observation, optionally with a code or label, to a complete skill execution, so one execution is one world-model transition.
+  On this mechanism we propose four action abstractions with increasing task knowledge: a compressed seed, two discrete codes learned from the demonstrations, and a symbolic label.
+  We evaluate them with a common world-model training procedure and planning framework on simulated block rearrangement tasks that require up to 14 sequential skills.
+  The symbolic label succeeds in over 90% of the tasks that require up to six skills and degrades beyond.
+  Without any label, an object-centric learned code matches it on single-skill tasks and retains half to three quarters of its success on tasks of two to five skills.
+  Ablations attribute much of the label's advantage to its planner knowing which actions are applicable, rather than to the label itself.
+  Beyond six skills the search, not the world model, limits success.
+</p>
+
+<h2>The idea in one figure</h2>
+<div class="row g-3 mb-4 align-items-center">
+  <div class="col-lg-7">
+    <div class="mx-auto" style="max-width: 640px;">
+      <img src="/assets/images/papers/flow_skill_wm/teaser_figure.png" class="img-fluid d-block" alt="A world model that steps over whole skills">
+    </div>
+  </div>
+  <div class="col-lg-5">
+    <ul class="mb-0 small">
+      <li class="mb-2"><strong>One skill, one transition.</strong> The world model predicts the outcome of a complete skill in one step. A skill is one execution of a flow-matching policy, 256 control steps from one settled scene to the next.</li>
+      <li class="mb-2"><strong>The action is the policy's input.</strong> A flow policy maps a noise sample, the <em>seed</em>, and an observation to a whole skill. It can also receive a code or a label. The planner chooses these inputs; the policy generates the motion.</li>
+      <li class="mb-2"><strong>One world model, one planner, four actions.</strong> The planner runs a beam search over the discrete part of the action and the cross-entropy method over its continuous part. The world model scores every candidate sequence in imagination.</li>
+      <li><strong>Finding.</strong> Success grows with the symbolic knowledge injected into the action and into its proposal. Beyond six skills the search, not the world model, limits success.</li>
+    </ul>
+  </div>
+</div>
+
+<h2>Method</h2>
+<div class="row g-3 mb-3">
+  <div class="col-12">
+    <img src="/assets/images/papers/flow_skill_wm/concept_figure.png" class="img-fluid d-block mx-auto" alt="Skill-level world modeling and planning">
+    <p class="text-muted small mt-2 mb-0">(a) A flow policy generates a complete skill from the observation, a noise seed, and an optional code or label. (b) The four action abstractions. (c) A world model predicts the outcome of candidate skill sequences in a learned embedding; the planner executes the first skill of the best sequence and replans.</p>
+  </div>
+</div>
+
+<h3 class="h5">The flow policy and its seed</h3>
+<p>
+  Demonstrations are segmented into skills. Each skill is an action chunk $X^1 \in \mathbb{R}^{T \times d}$ of $T$ low-level commands, paired with the observation $o$ at its start.
+  The observation contains the object poses and the robot state, and no goal, task, or label.
+  Flow matching trains a network to transport a seed $X^0 \sim \mathcal{N}(0, I)$ into the chunk along a straight path.
+  To execute a skill, the robot samples a seed, integrates the learned velocity field from $t = 0$ to $t = 1$, and runs the resulting chunk $X^1 = \Phi(X^0; o)$ open loop.
+  One policy is trained on the demonstrations of every skill, so the choice of skill is carried by the policy's inputs: the seed alone, or a code or label given with it.
+  One step of the world model maps the observation and the action to the next observation, $\hat f : (o_k, a_k) \mapsto o_{k+1}$.
+</p>
+
+<h3 class="h5">Four action abstractions on the same seed</h3>
+<p>Task knowledge grows from (i) to (iv). The first three need no symbolic labels. Each abstraction defines the additional policy input, the world-model action $a_k$, and how the planner proposes candidates. The assumptions are cumulative down the rows.</p>
+<div class="mb-4">
+  <a href="/assets/images/papers/flow_skill_wm/abstractions_figure.svg" target="_blank" rel="noopener"><img src="/assets/images/papers/flow_skill_wm/abstractions_figure.svg" class="img-fluid d-block mx-auto" alt="The four action abstractions: policy input, world-model action, and action proposal"></a>
+  <p class="text-muted small mt-2 mb-0">One row per abstraction, from the poster (click to open full size). Left: what the policy receives at execution and where its discrete part comes from. Middle: the world-model action. Right: how the search proposes candidates, and what each abstraction assumes and measures.</p>
+</div>
+
+<h3 class="h5">World model and planner</h3>
+<p>
+  The world model is a joint-embedding predictive architecture (JEPA), the LeWM instantiation: an encoder maps the observation to an embedding $e_k$ and a predictor maps $(e_k, a_k)$ to the next embedding.
+  Nothing is reconstructed. The goal is given as an observation $o^\star$ and encoded with the same frozen encoder.
+  The planner searches the sequence of $H$ actions whose imagined embeddings come closest to the goal,
+</p>
+<div class="my-2">
+  $$
+  J(a_{k:k+H-1}) = \min_{h \le H} \lVert \hat e_{k+h} - e^\star \rVert^2 , \qquad a^\ast = \arg\min_a J(a).
+  $$
+</div>
+<p>
+  A beam search enumerates the discrete part of the sequences and keeps the most promising ones; the cross-entropy method (CEM) samples the continuous part, where the action has one.
+  Only the first action of the best sequence is executed: the frozen flow policy runs the skill open loop, the robot observes the new scene, and plans again.
+  The world model and the search procedure are shared by the four abstractions; the action and how its candidates are proposed differ.
+</p>
+
+<h2>Experimental setup</h2>
+<div class="row g-3 align-items-center mb-3">
+  <div class="col-lg-6">
+    <img src="/assets/images/papers/flow_skill_wm/setup_figure.png" class="img-fluid d-block mx-auto" alt="The block scene, top view, with one instance of each skill">
+    <p class="text-muted small mt-2 mb-0">The block scene, top view, with one instance of each skill. Dashed blocks are goal poses.</p>
+  </div>
+  <div class="col-lg-6">
+    <ul class="mb-0 small">
+      <li class="mb-1"><strong>Scene.</strong> A simulated tabletop (MuJoCo) with a Franka Panda arm and six 4 cm blocks on two areas of six regions each. Skills: pick-place, stack, unstack, and no-op. A tower holds at most four blocks.</li>
+      <li class="mb-1"><strong>Demonstrations.</strong> 120k scripted chunks of $T = 256$ setpoints, branched so that 16 valid skills are demonstrated from each of 7,500 start states. The four flow policies share the data and the network.</li>
+      <li class="mb-1"><strong>Tasks.</strong> A fixed problem set with 100 tasks per difficulty $k = 1, \dots, 14$, where $k$ is the true minimum number of skills from start to goal (exact search over the symbolic layer). A task allows $k + 5$ turns.</li>
+      <li class="mb-1"><strong>Planner budget.</strong> Lookahead up to 15, beam 32, CEM with 64 samples for 5 iterations on the labeled residual.</li>
+      <li><strong>Metric.</strong> Symbolic success: the final arrangement equals the goal arrangement. Wilson 95% intervals; all curves are paired.</li>
+    </ul>
+  </div>
+</div>
+
+<h2>Results</h2>
+
+<h3 class="h5">Planning success versus task difficulty</h3>
+<div class="row g-3 align-items-center mb-4">
+  <div class="col-lg-7">
+    <img src="/assets/images/papers/flow_skill_wm/success_vs_k_main_with_dense_curve.png" class="img-fluid d-block mx-auto" alt="Planning success versus task difficulty k">
+    <p class="text-muted small mt-2 mb-0">Success against difficulty $k$ (100 paired tasks per $k$, $k + 5$ turns, Wilson 95% intervals).</p>
+  </div>
+  <div class="col-lg-5">
+    <p class="mb-2">The ordering follows the injected knowledge.</p>
+    <ul class="mb-0 small">
+      <li class="mb-1">The <strong>symbolic label</strong> plans reliably up to six skills, 93 to 96% for $k \le 6$, and falls from $k = 7$.</li>
+      <li class="mb-1">The <strong>object-centric code</strong> matches the label at $k = 1$ (92%) and keeps one half to three quarters of the label's success from $k = 2$ to $5$, without any label.</li>
+      <li class="mb-1">The <strong>learned code</strong> solves 79% at $k = 1$ but falls to 5% by $k = 6$.</li>
+      <li class="mb-1">The <strong>pure seed</strong> solves 8% of the tasks at $k = 1$ and none beyond.</li>
+      <li>A <strong>control-rate world model</strong> over the same rollouts, with the same budget in physical time, struggles to complete one skill: 1% at $k = 1$ and 0% beyond. Its success depends on the distance between the start and goal positions of the moved block.</li>
+    </ul>
+  </div>
+</div>
+
+<h3 class="h5">Is the label's advantage the label, or its planner's preconditions?</h3>
+<div class="row g-3 align-items-center mb-4">
+  <div class="col-lg-7">
+    <img src="/assets/images/papers/flow_skill_wm/success_vs_k_validity.png" class="img-fluid d-block mx-auto" alt="Validity of the proposed candidates">
+    <p class="text-muted small mt-2 mb-0">Dashed: the same abstractions without the precondition knowledge in their proposal. Gray: a random valid label at each turn, without world model.</p>
+  </div>
+  <div class="col-lg-5">
+    <p class="mb-2 small">We remove the precondition knowledge from the proposal and keep the action, the world model, and the search unchanged. The label loses the most, 10 to 47 points; the object-centric code loses 2 to 13; the learned code almost nothing. The two curves without preconditions nearly meet where the full curves are far apart.</p>
+    <p class="mb-2 small">Most of the label's advantage at short horizons is therefore its proposal knowing which labels apply, not the label as an action.</p>
+    <p class="mb-0 small">What remains is the world model's scoring. With valid labels but no world model, success is 0% at every $k$. The world model ranks the executed label first in 98% of held-out transitions, against about 60% for either code, so the gap that remains between the codes and the label is ranking, not validity.</p>
+  </div>
+</div>
+
+<h3 class="h5">Why does every abstraction fail at longer horizons?</h3>
+<div class="row g-3 align-items-center mb-4">
+  <div class="col-lg-5">
+    <div class="mx-auto" style="max-width: 420px;"><img src="/assets/images/papers/flow_skill_wm/showcase_cost_v3.png" class="img-fluid d-block" alt="Imagined cost of the plan the beam returns"></div>
+    <p class="text-muted small mt-2 mb-0">(a) The tower swap, one task: the cost of the chosen plan per turn, per abstraction. The star marks the turn at which the label reaches the goal. (b) Symbolic label on the problem set: success against the imagined cost of the plan returned at the first turn.</p>
+  </div>
+  <div class="col-lg-7">
+    <p class="mb-2 small">The world model is not the limit. For a $k = 14$ task, an optimal plan rolled out in the model has a cost of 7 to 20, against about 300 for random action sequences. The model identifies good plans when they are proposed.</p>
+    <p class="mb-2 small">Finding them is harder. The beam keeps the partial plans with the lowest predicted distance to the goal, but necessary intermediate moves, such as parking a block so that another one can move, may leave this distance unchanged or increase it. Such plans are pruned before their benefit becomes apparent.</p>
+    <p class="mb-2 small">When the layout lets the search see progress, the longest tasks remain solvable: the symbolic label solves the $k = 14$ tower swap below in 87% of the trials, with a median first-turn plan cost of 4.3. Across the problem set, success follows the first-turn cost rather than $k$.</p>
+    <p class="mb-0 small">A beam of 256 instead of 32 does not change these numbers. The limit is the ranking of partial plans by goal distance, not the number of candidates kept.</p>
+  </div>
+</div>
+
+<h3 class="h5">Cost of perception</h3>
+<p class="small">
+  With poses perceived from three fixed cameras (front, side, wrist) instead of the true poses, success changes little.
+  Averaged over $k = 1$ to $6$, the label loses 1 point, the learned code 1, and the object-centric code 6.
+  The perception model's error on settled scenes is 3.0 mm in position and 2.5° in rotation, and the perceived symbolic state equals the true one in 90% of the scenes.
+</p>
+
+<h2>The $k = 14$ tower swap</h2>
+<p>
+  Two towers of three blocks must exchange places, each in reverse stacking order.
+  The planner receives the goal as an image only; no plan and no symbolic goal are given.
+  Every solution begins by unstacking blocks to intermediate regions, so the task needs at least 14 skills.
+</p>
+<div class="ratio ratio-16x9">
+  <video class="w-100 h-100 object-fit-contain bg-black" autoplay loop muted playsinline controls preload="metadata">
+    <source src="/assets/images/papers/flow_skill_wm/videos/towers_swap_label_traced.mp4" type="video/mp4">
+  </video>
+</div>
+<p class="text-muted small mt-2">The symbolic label solving the tower swap, sped up. Right: the start and goal images, the world model's imagined cost along the chosen plan, the beam's best sequences at each turn, and the outcome of every executed skill. The planner reaches the goal after 16 skills; it corrects two placements on the way.</p>
+
+<div class="mt-3">
+  <img src="/assets/images/papers/flow_skill_wm/qualitative_banner_8cols.png" class="img-fluid d-block mx-auto" alt="One frame per executed skill on the tower swap">
+  <p class="text-muted small mt-2">Left: the start and goal observations (front camera). Right: one frame per executed skill, with the skill performed and the residual of that skill.</p>
+</div>
+
+<h3 class="h5 mt-4">The four abstractions on the same task</h3>
+<div class="row g-3 mb-2">
+  <div class="col-md-6">
+    <div class="ratio ratio-16x9" style="--bs-aspect-ratio: 67.9%;">
+      <video class="w-100 h-100 object-fit-cover" autoplay loop muted playsinline controls preload="metadata">
+        <source src="/assets/images/papers/flow_skill_wm/videos/towers_swap_symbolic_label_sim.mp4" type="video/mp4">
+      </video>
+    </div>
+    <p class="text-muted small mt-2 mb-0"><strong>(iv) Symbolic label.</strong> Reaches the goal.</p>
+  </div>
+  <div class="col-md-6">
+    <div class="ratio ratio-16x9" style="--bs-aspect-ratio: 67.9%;">
+      <video class="w-100 h-100 object-fit-cover" autoplay loop muted playsinline controls preload="metadata">
+        <source src="/assets/images/papers/flow_skill_wm/videos/towers_swap_object_centric_code_sim.mp4" type="video/mp4">
+      </video>
+    </div>
+    <p class="text-muted small mt-2 mb-0"><strong>(iii) Object-centric code.</strong> Proposes a low-cost plan, but the first skill beside a tower fails in execution.</p>
+  </div>
+  <div class="col-md-6">
+    <div class="ratio ratio-16x9" style="--bs-aspect-ratio: 67.9%;">
+      <video class="w-100 h-100 object-fit-cover" autoplay loop muted playsinline controls preload="metadata">
+        <source src="/assets/images/papers/flow_skill_wm/videos/towers_swap_learned_code_sim.mp4" type="video/mp4">
+      </video>
+    </div>
+    <p class="text-muted small mt-2 mb-0"><strong>(ii) Learned code.</strong> Same failure mode: the plan looks good to the world model, the execution beside a tower does not.</p>
+  </div>
+  <div class="col-md-6">
+    <div class="ratio ratio-16x9" style="--bs-aspect-ratio: 67.9%;">
+      <video class="w-100 h-100 object-fit-cover" autoplay loop muted playsinline controls preload="metadata">
+        <source src="/assets/images/papers/flow_skill_wm/videos/towers_swap_pure_seed_sim.mp4" type="video/mp4">
+      </video>
+    </div>
+    <p class="text-muted small mt-2 mb-0"><strong>(i) Pure seed.</strong> Finds no plan.</p>
+  </div>
+</div>
+<p class="text-muted small">All four clips run on the same start state and goal, with the same world-model recipe and the same search, sped up.</p>
+
+<h2>Take-aways</h2>
+<ol class="mb-4">
+  <li class="mb-1"><strong>One flow-policy execution is one world-model transition.</strong> The world model steps over whole skills, so a 14-skill task is a 14-step plan.</li>
+  <li class="mb-1"><strong>Success grows with the symbolic knowledge in the action and in its proposal.</strong> An object-centric code learned from observations keeps much of the label's success at short horizons without any label.</li>
+  <li><strong>Beyond six skills the search, not the world model, limits success.</strong> The world model scores the optimal plan well; a beam ranked by distance to the goal discards the intermediate moves that do not reduce it.</li>
+</ol>
+
+<h2>Citation</h2>
+<pre class="bg-light p-3 small overflow-auto"><code>@article{matoses2026flowskillwm,
+  title   = {Flow Policies as Actions of Skill-Level World Models: Learned and Symbolic Abstractions for Long-Horizon Planning},
+  author  = {Matoses Gimenez, Andreu and Papuc, Andrei-Carlo and Pek, Chris and Alonso-Mora, Javier},
+  year    = {2026},
+  note    = {Submitted to ICRA 2027}
+}</code></pre>

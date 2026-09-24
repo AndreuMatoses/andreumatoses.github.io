@@ -1,10 +1,18 @@
 services:
   jekyll:
-    image: jekyll/jekyll
+    # The `pages` tag matches the github-pages gem (Jekyll 3.x); the default tag now ships
+    # Jekyll 4 on Ruby 3.4, which cannot install the gems pinned in Gemfile.lock.
+    image: jekyll/jekyll:pages
+    environment:
+      JEKYLL_UID: "${JEKYLL_UID:-1000}"
+      JEKYLL_GID: "${JEKYLL_GID:-1000}"
     volumes:
       - .:/srv/jekyll
+      - jekyll_gems:/usr/local/bundle
     ports:
       - "4000:4000"
     # network_mode: host
-    # command: jekyll serve --livereload
-    command: jekyll serve --host 0.0.0.0 --livereload
+    command: sh -c "bundle install && bundle exec jekyll serve --host 0.0.0.0 --livereload"
+
+volumes:
+  jekyll_gems:

@@ -59,19 +59,22 @@ usemathjax: true
   We validate the planner on a real mobile manipulator.
 </p>
 
-<h2>The idea in one figure</h2>
+<h2>Overview</h2>
 <div class="row g-3 mb-4 align-items-center">
   <div class="col-lg-7">
     <img src="/assets/images/papers/hybrid_flow_planning/teaser.jpg" class="img-fluid d-block mx-auto" alt="The planner on the real robot building the tower R on Y on G">
     <p class="text-muted small mt-2 mb-0">Four frames of one run on the real robot. Each frame shows the plan generated from that scene, with the action in progress highlighted, and the generated waypoints of the base and the end effector.</p>
   </div>
   <div class="col-lg-5">
-    <ul class="mb-0 small">
-      <li class="mb-2"><strong>Plan and motion from one network.</strong> From an observation of the scene, one transformer generates the symbolic plan (for example <code>Move_to RG5</code>, <code>Pick Y</code>, <code>Place Y G</code>) and the waypoints of the mobile base and the end effector that execute it.</li>
-      <li class="mb-2"><strong>No planning domain, no search.</strong> The task knowledge comes from the demonstrations. A plan costs one generation pass with a fixed number of network evaluations.</li>
-      <li class="mb-2"><strong>About one hundred real demonstrations.</strong> 109 teleoperated demonstrations of a mobile manipulator, instead of thousands of scripted ones. Two properties of the data compensate for the small dataset: plan suffixes and object permutations.</li>
-      <li><strong>Replanning after every action.</strong> The robot executes the first action, observes the new scene, and plans again, so a missed grasp becomes a retry.</li>
-    </ul>
+    <p class="small">
+      Given an observation of the scene, with the poses of the robot, the cubes, and the tables, one transformer generates the symbolic plan (for example <code>Move_to RG5</code>, <code>Pick Y</code>, <code>Place Y G</code>) and the waypoints of the mobile base and the end effector that execute it.
+      The plan is generated with masked discrete flow matching and the waypoints with continuous flow matching, in the same generation pass.
+    </p>
+    <p class="small mb-0">
+      The planner is trained on 109 teleoperated demonstrations.
+      Every demonstration is also used from each of its intermediate actions onward, so the robot can replan after every action: it executes one action, observes the new scene, and generates a new plan.
+      Renaming the cubes consistently in a demonstration gives demonstrations of the other tower orders.
+    </p>
   </div>
 </div>
 
@@ -295,14 +298,7 @@ usemathjax: true
   </div>
 </div>
 
-<h2 class="mt-4">Take-aways</h2>
-<ol class="mb-4">
-  <li class="mb-1"><strong>One network gives the plan and the motion.</strong> Hybrid flow matching generates a symbolic plan and the base and arm trajectory of a mobile manipulator in one pass, without a planning domain or search.</li>
-  <li class="mb-1"><strong>The structure of the data compensates for few demonstrations.</strong> Plan suffixes multiply the training samples and allow replanning after every action; object permutations give goal conditioning without new demonstrations.</li>
-  <li><strong>The plan adds what motion alone does not.</strong> The planner completes the task as often as motion-only flow matching, and adds an explicit plan, action-level replanning, and goal conditioning.</li>
-</ol>
-
-<h2>Citation</h2>
+<h2 class="mt-4">Citation</h2>
 <pre class="bg-light p-3 small overflow-auto"><code>@article{redondo2026hybridflow,
   title   = {Learning Task and Motion Plans from Real Demonstrations with Hybrid Flow Matching},
   author  = {Redondo Garcia, Zuleika and Matoses Gimenez, Andreu and Alonso-Mora, Javier},

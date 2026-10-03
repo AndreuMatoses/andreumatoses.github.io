@@ -201,3 +201,14 @@ h2 {
         color: #000 !important;
     }
 }
+// Hugging Face logo for link buttons (Bootstrap Icons has none): `icon: bi-huggingface`
+.bi-huggingface::before {
+  content: "";
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+  background-color: currentColor;
+  -webkit-mask: url("/assets/icons/huggingface.svg") no-repeat center / contain;
+  mask: url("/assets/icons/huggingface.svg") no-repeat center / contain;
+}

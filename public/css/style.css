@@ -212,20 +212,19 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 
 /* ---------- homepage ---------- */
 
-/* Phone: small round photo next to the name. Wider: photo on the right of the bio. */
+/* Phone: small round photo next to the name.
+   Wider: the photo floats on the right, aligned with the cards, and the bio wraps around it. */
 .intro { display: grid; gap: 0 2.5rem; }
 .intro-head { display: grid; grid-template-columns: 84px 1fr; gap: 1rem; align-items: center; margin-bottom: 0.75rem; }
 .intro-head h1 { margin: 0; }
 .portrait { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 50%; border: 1px solid var(--rule); }
-.intro-text p { max-width: var(--prose); }
 .contact { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 1rem; }
 .contact .socials { margin-left: -0.6rem; }
 @media (min-width: 760px) {
-  .intro { grid-template-columns: 1fr 190px; grid-template-rows: auto 1fr; align-items: start; }
+  .intro { display: flow-root; }
   .intro-head { display: contents; }
-  .intro-head h1 { grid-column: 1; grid-row: 1; margin-bottom: 0.4rem; }
-  .intro-text { grid-column: 1; grid-row: 2; }
-  .portrait { grid-column: 2; grid-row: 1 / span 2; border-radius: var(--radius); }
+  .portrait { float: right; width: clamp(200px, 22vw, 270px); margin: 0.45rem 0 1rem 2.5rem; border-radius: var(--radius); }
+  .intro-head h1 { margin-bottom: 0.5rem; }
 }
 
 /* News: one row of up to three items between two rules. */

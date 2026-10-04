@@ -244,8 +244,8 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
   .intro-head h1 { margin-bottom: 0.5rem; }
 }
 
-/* News: one row of up to three items between two rules. */
-.news { margin: 1.75rem 0 2.5rem; padding: 1rem 0; border-top: 2px solid var(--accent); border-bottom: 1px solid var(--rule); }
+/* News: one row of up to three items between two thin gray rules (black lines are for the page frame). */
+.news { margin: 1.75rem 0 2.5rem; padding: 1rem 0; border-block: 1px solid var(--rule); }
 .news ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem 2rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); font-size: 0.9rem; }
 .news li { margin: 0; }
 .news strong { display: block; font-family: var(--font-head); font-size: 0.8rem; letter-spacing: 0.02em; }

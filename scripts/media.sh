@@ -3,6 +3,8 @@
 #
 #   scripts/media.sh web    in.mp4 [out.mp4]   web-safe H.264 for a page video (keeps audio, max 1280 px wide)
 #   scripts/media.sh cover  in.(mp4|gif) out.mp4   small silent loop for a homepage card (max 640 px wide)
+#       Aim for 4:3. To crop a 16:9 clip to its centre 4:3 part first:
+#       ffmpeg -i in.mp4 -vf "crop=ih*4/3:ih" -an tmp.mp4 && scripts/media.sh cover tmp.mp4 cover.mp4
 #   scripts/media.sh poster in.mp4 [seconds]   still frame <name>.poster.jpg (max 960 px), shown before the video plays
 #
 # Every video X.mp4 on the site has a poster X.poster.jpg next to it; cover.poster.jpg is also the link preview.

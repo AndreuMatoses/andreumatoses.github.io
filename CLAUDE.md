@@ -74,6 +74,8 @@ tests/                 serve.js (GitHub-Pages-like static server), pages.js, sit
 - Escape text that comes from `publications.bib` in templates (`| escape`); `&` in titles breaks HTML.
 - In HTML pages, write `&amp;` for a literal `&` inside `$$…$$` math (MathJax still reads it as `&`).
 - YAML data files: quote a value that contains `: `.
+- Card covers (`cover:`) are shown in their own shape, never cropped. Ask for / make 4:3 covers
+  when possible (e.g. 640×480) so the cards look even.
 - Videos: H.264, level ≤ 4.0, yuv420p, ≤ 30 fps, `+faststart` (`scripts/media.sh`). Give each `<video>`
   `width`/`height` and a poster: every `X.mp4` has `X.poster.jpg` (`scripts/media.sh poster X.mp4`; a
   test checks it). Use `data-autoplay … preload="none"` for clips; `site.js` plays them while visible.

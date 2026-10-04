@@ -60,7 +60,8 @@ tests/                      Playwright tests and renders
    published at `/<slug>/`, so the name must not be the same as a top-level page (the build stops if it is).
 2. Put the page in `index.md` (or `index.html`) and all its media in the same folder.
 3. Make a cover video `cover.mp4` and its poster `cover.poster.jpg` (see [Media](#images-and-videos)),
-   or use an image as the cover.
+   or use an image as the cover. **Aim for a 4:3 cover** (for example 640×480): the card shows the cover
+   in its own shape without cropping, so other shapes work, but 4:3 makes the cards look even.
 
 Front matter:
 
@@ -180,7 +181,7 @@ Posts entry in `_data/navigation.yaml`.
 
   ```shell
   scripts/media.sh web    in.mp4 out.mp4          # page video: max 1280 px, 30 fps, web-safe
-  scripts/media.sh cover  in.mp4 cover.mp4        # homepage card loop: max 640 px, no audio
+  scripts/media.sh cover  in.mp4 cover.mp4        # homepage card loop: max 640 px, no audio (aim for 4:3)
   scripts/media.sh poster cover.mp4 1             # still frame at 1 s -> cover.poster.jpg
   ```
 

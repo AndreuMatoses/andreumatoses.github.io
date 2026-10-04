@@ -152,12 +152,12 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 
 /* ---------- header / footer ---------- */
 
-.site-header { border-bottom: 2px solid var(--accent); }
+/* Header and footer have the width of the content column; their black line ends with it. */
 .site-nav,
 .site-footer-inner {
-  max-width: calc(var(--wide) + 2 * var(--gutter));
+  width: min(var(--wide), 100% - 2 * var(--gutter));
   margin: 0 auto;
-  padding: 0.9rem var(--gutter);
+  padding: 0.9rem 0;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -215,7 +215,9 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 .site-nav ul a:hover,
 .site-nav ul a[aria-current="page"] { color: var(--fg); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.5em; }
 
-.site-footer { border-top: 2px solid var(--accent); font-size: 0.875rem; color: var(--muted); }
+.site-nav { border-bottom: 2px solid var(--accent); }
+.site-footer { font-size: 0.875rem; color: var(--muted); }
+.site-footer-inner { border-top: 2px solid var(--accent); }
 .site-footer p { margin: 0; }
 
 .socials { display: flex; gap: 0.25rem; list-style: none; margin: 0; padding: 0; }

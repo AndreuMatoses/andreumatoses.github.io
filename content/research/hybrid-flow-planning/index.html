@@ -32,7 +32,7 @@ links:
 note: "* Equal contribution. Submitted to ICRA 2027."
 ---
 
-<figure><video src="summary_video.mp4" width="1280" height="720" poster="summary_poster.jpg" controls playsinline preload="none"></video><figcaption>Summary video of the paper.</figcaption></figure>
+<figure><video src="summary_video.mp4" width="1280" height="720" poster="summary_video.poster.jpg" controls playsinline preload="none"></video><figcaption>Summary video of the paper.</figcaption></figure>
 
 <h2>Abstract</h2>
 <p>
@@ -132,7 +132,7 @@ note: "* Equal contribution. Submitted to ICRA 2027."
   </div>
 </div>
 
-<figure><video src="dataset.mp4" width="1280" height="720" data-autoplay controls loop muted playsinline preload="none"></video><figcaption>The demonstrations, played one after the other, with the base and end-effector paths on the right.</figcaption></figure>
+<figure><video src="dataset.mp4" poster="dataset.poster.jpg" width="1280" height="720" data-autoplay controls loop muted playsinline preload="none"></video><figcaption>The demonstrations, played one after the other, with the base and end-effector paths on the right.</figcaption></figure>
 
 <h2>Results</h2>
 
@@ -197,10 +197,10 @@ note: "* Equal contribution. Submitted to ICRA 2027."
 <figure>
 <div class="cols">
   <div>
-    <video src="sim_recovery_ep_14_d7.mp4" width="964" height="362" data-autoplay controls loop muted playsinline preload="none"></video>
+    <video src="sim_recovery_ep_14_d7.mp4" poster="sim_recovery_ep_14_d7.poster.jpg" width="964" height="362" data-autoplay controls loop muted playsinline preload="none"></video>
   </div>
   <div>
-    <video src="sim_recovery_ep_104_d10.mp4" width="964" height="362" data-autoplay controls loop muted playsinline preload="none"></video>
+    <video src="sim_recovery_ep_104_d10.mp4" poster="sim_recovery_ep_104_d10.poster.jpg" width="964" height="362" data-autoplay controls loop muted playsinline preload="none"></video>
   </div>
 </div>
 <figcaption>Two held-out tasks, with 7 and 10 actions left to the goal. Left of each clip: the whole sampled trajectory executed open loop, which does not build the tower. Right: the same policy replanning after every action, which builds it.</figcaption>
@@ -215,23 +215,23 @@ note: "* Equal contribution. Submitted to ICRA 2027."
 </p>
 
 <h3>Building the tower</h3>
-<figure><video src="real_basic.mp4" width="1280" height="720" data-autoplay controls loop muted playsinline preload="none"></video><figcaption>The goal is R on Y on G on table T1. The overlay shows the current plan, with the action in progress highlighted. Every action succeeds, so the plan stays the same from one planning step to the next. 4&times; speed.</figcaption></figure>
+<figure><video src="real_basic.mp4" poster="real_basic.poster.jpg" width="1280" height="720" data-autoplay controls loop muted playsinline preload="none"></video><figcaption>The goal is R on Y on G on table T1. The overlay shows the current plan, with the action in progress highlighted. Every action succeeds, so the plan stays the same from one planning step to the next. 4&times; speed.</figcaption></figure>
 <figure><img src="real_run.jpg" alt="A run on the real robot"><figcaption>A run in frames, one per action. After every action the policy observes the new scene and samples a new plan and trajectory.</figcaption></figure>
 
 <h3>Replanning after a missed grasp</h3>
-<figure><video src="real_closed_loop.mp4" width="1280" height="720" data-autoplay controls loop muted playsinline preload="none"></video><figcaption>The grasp of R misses. At the next planning step, the policy sees R still on the table, plans the pick again, and finishes the tower. 4&times; speed.</figcaption></figure>
+<figure><video src="real_closed_loop.mp4" poster="real_closed_loop.poster.jpg" width="1280" height="720" data-autoplay controls loop muted playsinline preload="none"></video><figcaption>The grasp of R misses. At the next planning step, the policy sees R still on the table, plans the pick again, and finishes the tower. 4&times; speed.</figcaption></figure>
 <figure style="max-width: 760px"><img src="real_run_replan.jpg" alt="Replanning after a missed grasp"><figcaption>The same run as frames. The failed pick is marked in red; the replanned actions follow it.</figcaption></figure>
 
 <h3>Goal-conditioned policy</h3>
-<figure><video src="real_goal_conditioned.mp4" width="1280" height="720" data-autoplay controls loop muted playsinline preload="none"></video><figcaption>The policy trained with object permutations builds the tower Y on R on G, an order that no demonstration shows. 4&times; speed.</figcaption></figure>
+<figure><video src="real_goal_conditioned.mp4" poster="real_goal_conditioned.poster.jpg" width="1280" height="720" data-autoplay controls loop muted playsinline preload="none"></video><figcaption>The policy trained with object permutations builds the tower Y on R on G, an order that no demonstration shows. 4&times; speed.</figcaption></figure>
 
 <h3>Common failures</h3>
 <div class="cols">
   <div>
-    <figure><video src="failure_placement.mp4" width="576" height="300" data-autoplay controls loop muted playsinline preload="none"></video><figcaption><strong>Unstable placement.</strong> The cube is released off the support when stacking.</figcaption></figure>
+    <figure><video src="failure_placement.mp4" poster="failure_placement.poster.jpg" width="576" height="300" data-autoplay controls loop muted playsinline preload="none"></video><figcaption><strong>Unstable placement.</strong> The cube is released off the support when stacking.</figcaption></figure>
   </div>
   <div>
-    <figure><video src="failure_grasp.mp4" width="576" height="300" data-autoplay controls loop muted playsinline preload="none"></video><figcaption><strong>Missed grasp.</strong> The gripper closes a few centimeters from the cube.</figcaption></figure>
+    <figure><video src="failure_grasp.mp4" poster="failure_grasp.poster.jpg" width="576" height="300" data-autoplay controls loop muted playsinline preload="none"></video><figcaption><strong>Missed grasp.</strong> The gripper closes a few centimeters from the cube.</figcaption></figure>
   </div>
 </div>
 

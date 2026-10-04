@@ -3,7 +3,7 @@
 <article class="card">
   <div class="card-media">
     {%- if d.cover contains ".mp4" %}
-    <video src="/{{ d.slug }}/{{ d.cover }}" poster="/{{ d.slug }}/poster.jpg" data-autoplay muted loop playsinline preload="none" aria-hidden="true"></video>
+    <video src="/{{ d.slug }}/{{ d.cover }}" poster="/{{ d.slug }}/cover.poster.jpg" data-autoplay muted loop playsinline preload="none" aria-hidden="true"></video>
     {%- else %}
     <img src="/research/{{ d.slug }}/{{ d.cover }}" alt="" eleventy:widths="400,800" sizes="(min-width: 760px) 280px, 100vw">
     {%- endif %}

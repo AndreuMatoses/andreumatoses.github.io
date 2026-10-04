@@ -4,7 +4,7 @@
 % Site-only fields (not in the copied BibTeX):
 %   pubtype   journal | conference | workshop | thesis | preprint | other (default from the entry type)
 %   venue     display name of the venue (default: journal / booktitle / school)
-%   image     thumbnail, path from content/ (e.g. research/<slug>/poster.jpg)
+%   image     thumbnail, path from content/ (e.g. research/<slug>/cover.poster.jpg)
 %   pdf, website, code, video, dataset, poster, slides, thesis   links (a local path or a URL)
 %   award     short note shown after the venue, e.g. Best paper award
 %   abstract  shown in a collapsible block
@@ -90,7 +90,7 @@
   url       = {https://ieeexplore.ieee.org/abstract/document/10711319},
   website  = {/canopies-kth/},
   code     = {https://github.com/KTH-DHSG/ltl_automaton_core},
-  image    = {research/canopies-kth/poster.jpg},
+  image    = {research/canopies-kth/cover.poster.jpg},
   abstract = {In this paper, we introduce a ROS based framework designed for the planning and control of robotic systems within the context of precision agriculture, with an emphasis on human-in-the-loop capabilities. Utilizing Linear Temporal Logic to articulate complex task specifications, our algorithm creates high-level robotic plans that are not only correct by design but also adaptable in real time by human operators. This dual-focus approach ensures that while humans have the flexibility to modify the high-level plan on-the-fly or even take over low-level control of the robots, the system inherently safeguards against any human actions that could potentially breach the predefined task specifications. We demonstrate our algorithm within the dynamic and challenging environment of a real vineyard, where the collaboration between human workers and robots is critical for tasks such as harvesting and pruning, and show the practical applicability and robustness of our software. This work marks a pioneering application of formal methods to complex, real-world agricultural environments.}
 }
 
@@ -130,6 +130,6 @@
   venue    = {Master's thesis, KTH Royal Institute of Technology},
   website  = {/msc-thesis-marl/},
   code     = {https://github.com/AndreuMatoses/scalable-collision-avoidance-RL},
-  image    = {research/msc-thesis-marl/poster.jpg},
+  image    = {research/msc-thesis-marl/cover.poster.jpg},
   abstract = {In the last decades, significant theoretical advances have been made on the field of distributed mulit-agent control theory. One of the most common systems that can be modelled as multi-agent systems are the so called formation control problems, in which a network of mobile agents is controlled to move towards a desired final formation. These problems additionally pose practical challenges, namely limited access to information about the global state of the system, which justify the use distributed and localized approaches for solving the control problem. The problem is further complicated if partial or no information is known about the dynamic model of the system. A widely used approach for model free control is reinforcement learning (RL). A fundamental challenge of this approach in this setting is that the state-action space size scales exponentially with the number of agents, rendering the problem intractable for a large networks. This thesis presents a scalable and localized reinforcement learning approach to a traditional multi-agent formation control problem, with collision avoidance. A scalable reinforcement learning advantage actor critic algorithm is presented, based on previous work in the literature. Sub-optimal bounds are calculated for the accumulated reward and policy gradient localized approximations. The algorithm is tested on a two dimensional setting, with a network of mobile agents following simple integrator dynamics and stochastic localized policies. Neural networks are used to approximate the continuous value functions and policies. The formation control with collisions avoidance formulation and the algorithm presented show good scalability properties, with a polynomial increase in the number of function approximations parameters with number of agents. The reduced number of parameters decreases learning time for bigger networks, although the efficiency of computation is decreased compared to state of the art machine learning implementations. The policies obtained achieve probably safe trajectories although the lack of dynamic model makes it impossible to guarantee safety.}
 }

@@ -80,6 +80,11 @@ test.describe("static checks", () => {
     });
   }
 
+  test("every video has a poster", () => {
+    const bare = pages.flatMap(({ url, html }) => attr(html, /(<video(?![^>]*poster=)[^>]*>)/g).map((v) => `${url}: ${v}`));
+    expect(bare).toEqual([]);
+  });
+
   test("sitemap lists every page and no redirect", () => {
     const sitemap = fs.readFileSync(path.join(SITE, "sitemap.xml"), "utf8");
     const locs = attr(sitemap, /<loc>([^<]+)<\/loc>/g);

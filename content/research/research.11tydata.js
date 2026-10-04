@@ -8,8 +8,8 @@ export default {
     slug: slugOf,
     // A project with `external_url` only has a homepage card that links there.
     permalink: (data) => (data.external_url ? false : `/${slugOf(data)}/`),
-    // Still image for the card poster and the link preview (from content/).
+    // Still image for the link preview (from content/): cover.poster.jpg for a video cover.
     og_source: (data) =>
-      `research/${slugOf(data)}/${data.og_image || (isVideo(data.cover) ? "poster.jpg" : data.cover)}`,
+      `research/${slugOf(data)}/${data.og_image || (isVideo(data.cover) ? "cover.poster.jpg" : data.cover)}`,
   },
 };

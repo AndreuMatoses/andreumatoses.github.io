@@ -25,7 +25,7 @@ links:
       url: ""
     - name: Poster
       icon: bi-easel
-      url: poster.jpg
+      url: conference_poster.jpg
     - name: Code (coming soon)
       icon: bi-github
       url: ""
@@ -35,7 +35,7 @@ links:
 note: "* Equal contribution. Submitted to ICRA 2027."
 ---
 
-<figure><video src="summary_video.mp4" width="1280" height="720" poster="summary_poster.jpg" controls playsinline preload="none"></video><figcaption>Summary video of the paper.</figcaption></figure>
+<figure><video src="summary_video.mp4" width="1280" height="720" poster="summary_video.poster.jpg" controls playsinline preload="none"></video><figcaption>Summary video of the paper.</figcaption></figure>
 
 <h2>Abstract</h2>
 <p>
@@ -174,7 +174,7 @@ note: "* Equal contribution. Submitted to ICRA 2027."
   The planner receives the goal as an image only; no plan and no symbolic goal are given.
   Every solution begins by unstacking blocks to intermediate regions, so the task needs at least 14 skills.
 </p>
-<figure><video src="towers_swap_label_traced.mp4" width="1280" height="716" data-autoplay controls loop muted playsinline preload="none"></video><figcaption>The symbolic label solving the tower swap, sped up. Right: the start and goal images, the world model's imagined cost along the chosen plan, the beam's best sequences at each turn, and the outcome of every executed skill. The planner reaches the goal after 16 skills; it corrects two placements on the way.</figcaption></figure>
+<figure><video src="towers_swap_label_traced.mp4" poster="towers_swap_label_traced.poster.jpg" width="1280" height="716" data-autoplay controls loop muted playsinline preload="none"></video><figcaption>The symbolic label solving the tower swap, sped up. Right: the start and goal images, the world model's imagined cost along the chosen plan, the beam's best sequences at each turn, and the outcome of every executed skill. The planner reaches the goal after 16 skills; it corrects two placements on the way.</figcaption></figure>
 
 <figure><img src="qualitative_banner_8cols.png" alt="One frame per executed skill on the tower swap"><figcaption>Left: the start and goal observations (front camera). Right: one frame per executed skill, with the skill performed and the residual of that skill.</figcaption></figure>
 
@@ -182,16 +182,16 @@ note: "* Equal contribution. Submitted to ICRA 2027."
 <figure>
 <div class="cols">
   <div>
-    <figure><video src="towers_swap_symbolic_label_sim.mp4" width="640" height="434" data-autoplay controls loop muted playsinline preload="none"></video><figcaption><strong>(iv) Symbolic label.</strong> Reaches the goal.</figcaption></figure>
+    <figure><video src="towers_swap_symbolic_label_sim.mp4" poster="towers_swap_symbolic_label_sim.poster.jpg" width="640" height="434" data-autoplay controls loop muted playsinline preload="none"></video><figcaption><strong>(iv) Symbolic label.</strong> Reaches the goal.</figcaption></figure>
   </div>
   <div>
-    <figure><video src="towers_swap_object_centric_code_sim.mp4" width="640" height="434" data-autoplay controls loop muted playsinline preload="none"></video><figcaption><strong>(iii) Object-centric code.</strong> Proposes a low-cost plan, but the first skill beside a tower fails in execution.</figcaption></figure>
+    <figure><video src="towers_swap_object_centric_code_sim.mp4" poster="towers_swap_object_centric_code_sim.poster.jpg" width="640" height="434" data-autoplay controls loop muted playsinline preload="none"></video><figcaption><strong>(iii) Object-centric code.</strong> Proposes a low-cost plan, but the first skill beside a tower fails in execution.</figcaption></figure>
   </div>
   <div>
-    <figure><video src="towers_swap_learned_code_sim.mp4" width="640" height="434" data-autoplay controls loop muted playsinline preload="none"></video><figcaption><strong>(ii) Learned code.</strong> Same failure mode: the plan looks good to the world model, the execution beside a tower does not.</figcaption></figure>
+    <figure><video src="towers_swap_learned_code_sim.mp4" poster="towers_swap_learned_code_sim.poster.jpg" width="640" height="434" data-autoplay controls loop muted playsinline preload="none"></video><figcaption><strong>(ii) Learned code.</strong> Same failure mode: the plan looks good to the world model, the execution beside a tower does not.</figcaption></figure>
   </div>
   <div>
-    <figure><video src="towers_swap_pure_seed_sim.mp4" width="640" height="434" data-autoplay controls loop muted playsinline preload="none"></video><figcaption><strong>(i) Pure seed.</strong> Finds no plan.</figcaption></figure>
+    <figure><video src="towers_swap_pure_seed_sim.mp4" poster="towers_swap_pure_seed_sim.poster.jpg" width="640" height="434" data-autoplay controls loop muted playsinline preload="none"></video><figcaption><strong>(i) Pure seed.</strong> Finds no plan.</figcaption></figure>
   </div>
 </div>
 <figcaption>All four clips run on the same start state and goal, with the same world-model recipe and the same search, sped up.</figcaption>

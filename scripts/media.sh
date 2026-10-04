@@ -3,7 +3,9 @@
 #
 #   scripts/media.sh web    in.mp4 [out.mp4]   web-safe H.264 for a page video (keeps audio, max 1280 px wide)
 #   scripts/media.sh cover  in.(mp4|gif) out.mp4   small silent loop for a homepage card (max 640 px wide)
-#   scripts/media.sh poster in.(mp4|gif) out.jpg [seconds]   still frame, used as video poster and link preview
+#   scripts/media.sh poster in.mp4 [seconds]   still frame <name>.poster.jpg (max 960 px), shown before the video plays
+#
+# Every video X.mp4 on the site has a poster X.poster.jpg next to it; cover.poster.jpg is also the link preview.
 #
 # With no out file, `web` replaces the input, but only if the result is at least 20% smaller.
 # Browsers show a gray box for H.264 above level 4.x or with a bogus frame rate, so every
@@ -36,8 +38,7 @@ case $cmd in
     ffmpeg -v error -y -i "$in" -vf "$(scale 640),fps=fps='min(source_fps,30)'" "${h264[@]}" -crf 28 -an "$out"
     ;;
   poster)
-    out=${3:?missing output}
-    ffmpeg -v error -y -ss "${4:-0}" -i "$in" -frames:v 1 -q:v 3 "$out"
+    ffmpeg -v error -y -ss "${3:-1}" -i "$in" -frames:v 1 -vf "$(scale 960)" -q:v 5 "${in%.*}.poster.jpg"
     ;;
   *)
     echo "unknown command: $cmd" >&2; exit 1 ;;

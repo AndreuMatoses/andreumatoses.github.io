@@ -263,6 +263,16 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 .links { margin: 0; font-size: 0.875rem; font-weight: 600; display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; }
 .links a { position: relative; z-index: 1; color: var(--muted); text-decoration: none; }
 .links a:hover { color: var(--fg); text-decoration: underline; }
+/* "project page / code / arxiv" on the homepage cards */
+.card .links { gap: 0.25rem 0.5rem; }
+.card .links a + a::before {
+  content: "/";
+  display: inline-block; /* keeps the hover underline off the slash */
+  margin-right: 0.5rem;
+  color: var(--muted);
+  opacity: 0.6;
+  font-weight: 400;
+}
 
 /* ---------- publications ---------- */
 

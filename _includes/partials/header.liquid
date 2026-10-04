@@ -1,6 +1,6 @@
 <header class="site-header">
   <nav class="site-nav" aria-label="Main">
-    <a class="site-name" href="/"{% if page.url == "/" %} aria-current="page"{% endif %}>{{ site.title }}</a>
+    <a class="site-name" href="/"{% if page.url == "/" %} aria-current="page"{% endif %}><span class="name-full">{{ site.title }}</span><span class="name-short">{{ site.short_title }}</span></a>
     <ul>
       {%- for item in navigation %}
       <li><a href="{{ item.link }}"{% if page.url == item.link %} aria-current="page"{% endif %}>{{ item.name }}</a></li>

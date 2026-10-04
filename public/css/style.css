@@ -173,8 +173,22 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 }
 .site-nav ul { display: flex; gap: 1.25rem; list-style: none; margin: 0; padding: 0; }
 .site-nav li + li { margin: 0; }
-.site-nav ul a { color: var(--fg); text-decoration: none; }
 .site-nav ul { align-items: center; }
+.site-nav ul a {
+  font-family: var(--font-head);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+}
+.name-short { display: none; }
+/* Phones: first name only, so the name, links and theme button fit in one row. */
+@media (max-width: 600px) {
+  .site-nav { flex-wrap: nowrap; }
+  .site-nav ul { gap: 0.9rem; }
+  .name-full { display: none; }
+  .name-short { display: inline; }
+}
 .theme-toggle {
   display: inline-flex;
   align-items: center;
@@ -199,7 +213,7 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
   :root:not([data-theme="light"]) .theme-toggle .icon:last-child { color: var(--fg); opacity: 1; }
 }
 .site-nav ul a:hover,
-.site-nav ul a[aria-current="page"] { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.35em; }
+.site-nav ul a[aria-current="page"] { color: var(--fg); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.5em; }
 
 .site-footer { border-top: 2px solid var(--accent); font-size: 0.875rem; color: var(--muted); }
 .site-footer p { margin: 0; }

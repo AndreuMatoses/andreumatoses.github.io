@@ -1,0 +1,237 @@
+---
+title: "Learning Task and Motion Plans from Real Demonstrations with Hybrid Flow Matching"
+venue: "Submitted to the IEEE International Conference on Robotics and Automation (ICRA) 2027"
+authors:
+    - name: "Zuleika Redondo Garcia"
+      superscript: "1,*"
+    - name: "Andreu Matoses Gimenez"
+      superscript: "1,*"
+    - name: "Javier Alonso-Mora"
+      superscript: "1"
+affiliations:
+    - name: "Delft University of Technology"
+      url: "https://www.tudelft.nl/en"
+      superscript: "1"
+date: 2026-09-15
+description: "One network generates the symbolic plan and the motion of a mobile manipulator with hybrid flow matching, learned from 109 teleoperated demonstrations. Plan suffixes let the robot replan after every action, and object permutations make the planner goal-conditioned without new demonstrations."
+cover: cover.mp4
+bibkey: redondo2026hybridflow
+links:
+    - name: Paper (coming soon)
+      icon: bi-file-earmark-pdf
+      url: ""
+    - name: Code (coming soon)
+      icon: bi-github
+      url: ""
+    - name: Models
+      icon: bi-huggingface
+      url: "https://huggingface.co/andreu-collabs/hybrid-flow-planning-3blocks"
+    - name: Demonstrations (coming soon)
+      icon: bi-database
+      url: ""
+note: "* Equal contribution. Submitted to ICRA 2027."
+---
+
+<figure><video src="summary_video.mp4" width="1280" height="720" poster="summary_poster.jpg" controls playsinline preload="none"></video><figcaption>Summary video of the paper.</figcaption></figure>
+
+<h2>Abstract</h2>
+<p>
+  Long-horizon mobile manipulation requires a task plan and the motion that executes it.
+  Generative planners trained on demonstration produce both in one pass, requiring neither a symbolic domain nor search.
+  To date, however, they have relied on thousands of scripted demonstrations of fixed-base arms and executed open loop.
+  This paper presents a hybrid flow matching planner: a single network generates the symbolic plan with masked discrete flow matching and the motion trajectory with continuous flow matching.
+  Unlike prior generative planners, we aim to learn from a much smaller set of demonstrations and to execute the plan in closed loop.
+  Two properties of the data compensate for the small dataset.
+  A demonstration resumed from any of its intermediate actions is itself a demonstration, which multiplies the training samples and enables replanning after every action.
+  Objects of the same kind are interchangeable, which turns demonstrations of one goal into demonstrations of every permuted goal.
+  Our base implementation produces valid plans on 68% of held-out scenes; a training and generation scheme for the discrete plan raises this to 76%, and replanning after every action raises the task completion rate from 40% to 53% in a kinematic simulation.
+  The planner matches the task completion rate of motion-only flow matching policies while additionally providing the symbolic plan, and it outperforms previous hybrid diffusion formulations on both task completion and plan validity.
+  We validate the planner on a real mobile manipulator.
+</p>
+
+<h2>Overview</h2>
+<div class="cols center" style="--cols: 7fr 5fr">
+  <div>
+    <figure><img src="teaser.jpg" alt="The planner on the real robot building the tower R on Y on G"><figcaption>Four frames of one run on the real robot. Each frame shows the plan generated from that scene, with the action in progress highlighted, and the generated waypoints of the base and the end effector.</figcaption></figure>
+  </div>
+  <div>
+    <p class="small">
+      Given an observation of the scene, with the poses of the robot, the cubes, and the tables, one transformer generates the symbolic plan (for example <code>Move_to RG5</code>, <code>Pick Y</code>, <code>Place Y G</code>) and the waypoints of the mobile base and the end effector that execute it.
+      The plan is generated with masked discrete flow matching and the waypoints with continuous flow matching, in the same generation pass.
+    </p>
+    <p class="small">
+      The planner is trained on 109 teleoperated demonstrations.
+      Every demonstration is also used from each of its intermediate actions onward, so the robot can replan after every action: it executes one action, observes the new scene, and generates a new plan.
+      Renaming the cubes consistently in a demonstration gives demonstrations of the other tower orders.
+    </p>
+  </div>
+</div>
+
+<h2>Problem</h2>
+<div class="cols center">
+  <div>
+    <figure><img src="scene.png" alt="The running example: three cubes on three tables"><figcaption>The running example. Three cubes R, Y, and G on tables T1&ndash;T3, with approach regions RG1&ndash;RG10 along the table sides. The goal is the tower R on Y on G on T1 (ghost cubes).</figcaption></figure>
+  </div>
+  <div>
+    <p class="small">
+      A task is an observation $o$ of the scene, with the poses of the robot and of every cube, and a symbolic goal $g$.
+      A solution has two aligned levels: a symbolic plan of $M$ actions $\sigma = (a_1, \ldots, a_M)$ and a trajectory $x_c = (x_{c,1}, \ldots, x_{c,M})$, where the segment $x_{c,k}$ realizes the action $a_k$.
+    </p>
+    <p class="small">
+      A waypoint is the commanded robot state: the base pose, the end-effector pose, and the gripper command.
+      <code>Move_to</code> takes an approach region, <code>Pick</code> a cube, and <code>Place</code> the held cube and a support, either a cube or a table.
+    </p>
+    <p class="small">
+      From demonstrations we learn a generative model $p_\theta(x_d, x_c \mid o, g)$, where $x_d$ is the plan as a token sequence.
+      A sampled plan must be grammatical, valid for the task, and successful when its trajectory is executed.
+    </p>
+  </div>
+</div>
+
+<h2>Method</h2>
+<figure><img src="network.png" alt="The network"><figcaption>The network. The plan tokens and the waypoints form one sequence for the transformer. Its cross-attention reads one token per flow time and one per observation component. The token head gives the token distribution at every plan position and the velocity head the velocity at every waypoint.</figcaption></figure>
+
+<h3>Hybrid flow matching</h3>
+<p>
+  The symbolic plan is generated with masked discrete flow matching, from a fully masked sequence.
+  The trajectory is generated with continuous flow matching, from noise.
+  Both flows run in parallel through the same network, so each modality conditions the other while it is generated.
+  Each flow has its own time, $t_d$ and $t_c$, from 0 (noise) to 1 (data).
+</p>
+
+<h3>Training and generation scheme for the plan</h3>
+<ul class="small">
+  <li><strong>Grammar-constrained reveal.</strong> A masked position is revealed only to a token that the plan grammar allows under every completion of its prefix. A token that becomes invalid after its left context changes is masked and predicted again.</li>
+  <li><strong>Freeze after the end token.</strong> Once an end token is visible, no position after it is revealed.</li>
+  <li><strong>Pad supervision.</strong> The pad tokens after the plan are masked and supervised with the plan, so the network learns where a plan of any length ends.</li>
+  <li><strong>Learned loss balance.</strong> The discrete and continuous losses differ in scale and evolve differently during training. Uncertainty weighting learns their balance.</li>
+</ul>
+
+<h3>Two augmentations from the structure of the data</h3>
+<div class="cols">
+  <div>
+    <figure><img src="symbolic_chunking.png" alt="Plan suffixes of one demonstration"><figcaption><strong>Plan suffixes.</strong> The remainder of a demonstration after any action is itself a valid demonstration from the intermediate observation $o_k$. A demonstration of $M$ actions gives $M$ training samples. The same samples let the robot replan after every action: it executes the first action, observes the new scene, and generates a new plan from there.</figcaption></figure>
+  </div>
+  <div>
+    <figure><img src="symbolic_permutations.png" alt="Object permutation of one demonstration"><figcaption><strong>Object permutations.</strong> The cubes are interchangeable. A consistent renaming of the cubes in the goal, the plan, and the observation gives a demonstration of another tower order with the same trajectory. Trained on the six permutations, the planner builds any tower order.</figcaption></figure>
+  </div>
+</div>
+
+<h2>Experimental setup</h2>
+<div class="cols center" style="--cols: 7fr 5fr">
+  <div>
+    <figure><img src="demonstrations.jpg" alt="The demonstrations"><figcaption>The 109 (+12 validation) demonstrations. Left: top view with the base paths (grey), the end-effector paths (violet), the start poses, and the initial cube positions. Right: one demonstration at its action boundaries, with the actions, the wrist-camera views, and the distribution of plan lengths.</figcaption></figure>
+  </div>
+  <div>
+    <ul class="small">
+      <li><strong>Robot.</strong> A holonomic mobile base (Clearpath Dingo-O) with a six-joint arm (Kinova Gen3 Lite). Three cubes with a side of 6.5 cm, three tables of different heights and sizes.</li>
+      <li><strong>Demonstrations.</strong> 109 teleoperated demonstrations for training and 12 held out for validation, with the cube and robot poses from motion capture. They contain 4 to 18 actions and 17 to 69 waypoints, about 0.8 s apart.</li>
+      <li><strong>Network.</strong> A transformer with four layers of width 256, 7.5 million parameters, trained in about 20 minutes on one RTX 3090. Generation uses 100 steps.</li>
+      <li><strong>Metrics.</strong> A plan is valid under a symbolic model of the task. Execution runs in a kinematic simulation; a task is completed when the goal tower stands. Open loop executes the whole sampled trajectory; closed loop executes one action and replans.</li>
+    </ul>
+  </div>
+</div>
+
+<figure><video src="dataset.mp4" width="1280" height="720" data-autoplay controls loop muted playsinline preload="none"></video><figcaption>The demonstrations, played one after the other, with the base and end-effector paths on the right.</figcaption></figure>
+
+<h2>Results</h2>
+
+<h3>Comparison on the held-out demonstrations</h3>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col" rowspan="2">Policy</th>
+        <th scope="col" colspan="2">Symbolic plan valid (%)</th>
+        <th scope="col" colspan="2">Task completed (%)</th>
+      </tr>
+      <tr>
+        <th scope="col">all $d$</th>
+        <th scope="col">$d \geq 13$</th>
+        <th scope="col">open loop</th>
+        <th scope="col">closed loop</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Motion-only flow matching</td><td>&ndash;</td><td>&ndash;</td><td>39 &plusmn; 2</td><td>52 &plusmn; 2</td></tr>
+      <tr><td>Hybrid diffusion, whole demonstrations</td><td>8 &plusmn; 1</td><td>1</td><td>0</td><td>0</td></tr>
+      <tr><td>Hybrid diffusion, our suffix samples</td><td>62 &plusmn; 1</td><td>5</td><td>6 &plusmn; 0</td><td>9 &plusmn; 0</td></tr>
+      <tr class="ours"><td>Ours</td><td>76 &plusmn; 1</td><td>33</td><td>40 &plusmn; 3</td><td>53 &plusmn; 3</td></tr>
+      <tr><td>Ours + permutations*</td><td>76 &plusmn; 1</td><td>53</td><td>26 &plusmn; 3</td><td>36 &plusmn; 3</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="caption">12 held-out demonstrations, mean and standard deviation over 3 training seeds, 50 samples per task. $d$ is the number of actions left to the goal. Hybrid diffusion is the formulation of H&oslash;eg et al. (2025) on our network and data. *Goal-conditioned: trained on all six tower orders, scored on the recorded one.</p>
+
+<figure><img src="success_binned.png" alt="Success against the number of actions left to the goal"><figcaption>Success against the number of actions left to the goal $d$. Left: the sampled plan is valid. Middle: the tower stands after the whole sampled trajectory is executed. Right: the tower stands when the policy replans after every action.</figcaption></figure>
+<ul class="small">
+  <li><strong>Plans.</strong> Our planner produces valid plans in about three quarters of the samples. Validity is near perfect with four or fewer actions left and falls to about one third beyond 13 actions. On training demonstrations of similar length, validity stays above 95% up to 17 actions, so the long-horizon failures come from unseen scenes.</li>
+  <li><strong>Execution.</strong> Our planner completes the task as often as motion-only flow matching and adds the symbolic plan, replanning at action level, and goal conditioning. Most execution failures are grasps or placements off by a few centimeters.</li>
+  <li><strong>Closed loop.</strong> Replanning after every action raises the task completion rate from 40% to 53%, and from 0 to 10&ndash;30% at long horizons.</li>
+  <li><strong>Hybrid diffusion.</strong> Trained on our suffix samples, it plans nearly as well as our base implementation, but its trajectories do not reach the cubes: the median end-effector error is 0.71 m against 0.25 m for ours.</li>
+</ul>
+
+<h3>The scheme one step at a time</h3>
+<div class="cols center" style="--cols: 7fr 5fr">
+  <div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">From our base implementation</th><th scope="col">Plan valid (%)</th><th scope="col">$d \geq 13$</th><th scope="col">Closed loop (%)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Unconstrained generation</td><td>55 &plusmn; 1</td><td>5</td><td>41 &plusmn; 4</td></tr>
+          <tr><td>+ grammar and freeze (base)</td><td>68 &plusmn; 2</td><td>10</td><td>53 &plusmn; 5</td></tr>
+          <tr><td>+ pad supervision</td><td>71 &plusmn; 4</td><td>20</td><td>53 &plusmn; 3</td></tr>
+          <tr class="ours"><td>+ learned loss balance = Ours</td><td>76 &plusmn; 1</td><td>33</td><td>53 &plusmn; 3</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div>
+    <p class="small">Grammar-constrained generation and the freeze after the end token raise plan validity from 55% to 68%, and the closed-loop task completion rate from 41% to 53%: a rollout that ends in an ungrammatical plan cannot continue. Pad supervision and the learned loss balance raise validity to 76% overall and to 33% beyond 13 actions. The open-loop task completion rate changes little; the scheme acts on the plan, not on the motion.</p>
+  </div>
+</div>
+
+<h3>Recovery in the kinematic simulation</h3>
+<figure>
+<div class="cols">
+  <div>
+    <video src="sim_recovery_ep_14_d7.mp4" width="964" height="362" data-autoplay controls loop muted playsinline preload="none"></video>
+  </div>
+  <div>
+    <video src="sim_recovery_ep_104_d10.mp4" width="964" height="362" data-autoplay controls loop muted playsinline preload="none"></video>
+  </div>
+</div>
+<figcaption>Two held-out tasks, with 7 and 10 actions left to the goal. Left of each clip: the whole sampled trajectory executed open loop, which does not build the tower. Right: the same policy replanning after every action, which builds it.</figcaption>
+</figure>
+
+<h2>Real robot</h2>
+<p>
+  The policy runs on the robot from the motion capture poses.
+  The end-effector waypoints are converted to joint targets by inverse kinematics, the base waypoints go to the base controller, and the policy replans after every action.
+  In 30 unseen cube placements, the robot built the tower in about 30% of the runs from short plans ($d \leq 6$) and in 10% from long ones ($d \geq 8$).
+  The failures are the same as in the kinematic simulation: grasps missed by a few centimeters and placements off the support.
+</p>
+
+<h3>Building the tower</h3>
+<figure><video src="real_basic.mp4" width="1280" height="720" data-autoplay controls loop muted playsinline preload="none"></video><figcaption>The goal is R on Y on G on table T1. The overlay shows the current plan, with the action in progress highlighted. Every action succeeds, so the plan stays the same from one planning step to the next. 4&times; speed.</figcaption></figure>
+<figure><img src="real_run.jpg" alt="A run on the real robot"><figcaption>A run in frames, one per action. After every action the policy observes the new scene and samples a new plan and trajectory.</figcaption></figure>
+
+<h3>Replanning after a missed grasp</h3>
+<figure><video src="real_closed_loop.mp4" width="1280" height="720" data-autoplay controls loop muted playsinline preload="none"></video><figcaption>The grasp of R misses. At the next planning step, the policy sees R still on the table, plans the pick again, and finishes the tower. 4&times; speed.</figcaption></figure>
+<figure style="max-width: 760px"><img src="real_run_replan.jpg" alt="Replanning after a missed grasp"><figcaption>The same run as frames. The failed pick is marked in red; the replanned actions follow it.</figcaption></figure>
+
+<h3>Goal-conditioned policy</h3>
+<figure><video src="real_goal_conditioned.mp4" width="1280" height="720" data-autoplay controls loop muted playsinline preload="none"></video><figcaption>The policy trained with object permutations builds the tower Y on R on G, an order that no demonstration shows. 4&times; speed.</figcaption></figure>
+
+<h3>Common failures</h3>
+<div class="cols">
+  <div>
+    <figure><video src="failure_placement.mp4" width="576" height="300" data-autoplay controls loop muted playsinline preload="none"></video><figcaption><strong>Unstable placement.</strong> The cube is released off the support when stacking.</figcaption></figure>
+  </div>
+  <div>
+    <figure><video src="failure_grasp.mp4" width="576" height="300" data-autoplay controls loop muted playsinline preload="none"></video><figcaption><strong>Missed grasp.</strong> The gripper closes a few centimeters from the cube.</figcaption></figure>
+  </div>
+</div>
+

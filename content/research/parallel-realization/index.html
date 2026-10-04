@@ -1,0 +1,152 @@
+---
+title: "Cross-Entropy Optimization of Physically Grounded Task and Motion Plans"
+venue: "IEEE Robotics and Automation Letters (RA-L) 2026"
+authors:
+    - name: "Andreu Matoses Gimenez"
+      superscript: "1"
+    - name: "Nils Wilde"
+      superscript: "2"
+    - name: "Chris Pek"
+      superscript: "1"
+    - name: "Javier Alonso-Mora"
+      superscript: "1"
+affiliations:
+    - name: "Delft University of Technology"
+      url: "https://www.tudelft.nl/en"
+      superscript: "1"
+    - name: "Dalhousie University"
+      url: "https://www.dal.ca/"
+      superscript: "2"
+date: 2025-11-01
+description: "We use a parallelized physics simulator and cross entropy optimization to find optimal realizations of task and motion planning (TAMP) problems. This allows us to consider dynamics, contacts and the low level controllers that the real robot has, and their impact on the optimality and feasibility of the solutions."
+cover: cover.mp4
+bibkey: matoses2026crossentropy
+links:
+    - name: IEEE Xplore
+      icon: bi-journal-text
+      url: "https://ieeexplore.ieee.org/document/11486591"
+    - name: Paper
+      icon: bi-file-earmark-pdf
+      url: Parallel_realization_RAL_final_arxiv_version.pdf
+    - name: ArXiv
+      icon: bi-file-earmark-text
+      url: "https://arxiv.org/abs/2512.11571"
+    - name: Code (WIP)
+      icon: bi-github
+      url: ""
+note: "Published in IEEE Robotics and Automation Letters (RA-L)."
+---
+
+<div class="cols">
+  <div>
+    <figure><video src="phone_ramp_teaser.mp4" width="1280" height="720" data-autoplay controls loop muted playsinline preload="none"></video><figcaption>Pick-and-place teaser with ramp dynamics.</figcaption></figure>
+  </div>
+  <div>
+    <figure><video src="stick_and_box_teaser.mp4" width="1280" height="720" data-autoplay controls loop muted playsinline preload="none"></video><figcaption>Move-and-push teaser with contact-rich manipulation.</figcaption></figure>
+  </div>
+</div>
+
+<h2>Abstract</h2>
+<p>
+  Autonomously performing tasks often requires robots to plan high-level discrete actions and continuous low-level motions to realize them.
+  Task and Motion Planning (TAMP) algorithms solve these hybrid problems together.
+  Previous TAMP algorithms have focused mainly on computational performance, completeness, or optimality by making the problem tractable through simplifications and abstractions.
+  However, this comes at the cost that the resulting plans may not adequately account for the dynamics or complex contacts necessary to reliably perform the task when manipulation of objects is required.
+  Additionally, approaches that ignore effects of the low-level controllers may not obtain optimal or feasible plan realizations for the real system.
+  We investigate the use of a GPU-parallelized physics simulator to compute realizations of plans with a motion controller, explicitly accounting for dynamics, and considering contacts with the environment.
+  Using cross-entropy optimization, we sample the parameters of the controllers, or actions, to obtain low-cost solutions.
+  Since our approach uses the same controllers as the real system, the robot can directly execute the computed plans. We demonstrate our approach for a set of tasks where the robot is able to exploit the environment's geometry to move an object.
+</p>
+
+<h2>Method overview</h2>
+<figure style="max-width: 700px"><img src="method_diagram_small.jpg" alt="Method overview diagram"></figure>
+<ol class="steps">
+  <li><strong>Symbolic planning:</strong> Generate candidate symbolic plans from available symbols and initial parameters.</li>
+  <li><strong>Simulation and optimization:</strong> Simulate plans in parallel, evaluate costs, and update parameters with cross-entropy optimization.</li>
+  <li><strong>Result:</strong> After convergence, deploy the best feasible plan using the same low-level controllers.</li>
+</ol>
+<p class="caption">* We use geometric fabrics for fast, GPU-parallelizable motion of the base and arm with end-effector pose control and collision avoidance.
+  For mobile base path planning only, we use A* with a parallelized GPU waypoint tracking algorithm. The simulation is implemented in NVIDIA Isaac Gym.</p>
+
+<h2>P1: Pick and Place with an obstacle in the middle</h2>
+<div class="cols">
+  <div>
+    <h3>Setting</h3>
+    <p>Two tables are separated by an obstacle. A graspable <span class="hl-amber">cube</span> starts on Table 1. The obstacle geometry may help or hinder the task.</p>
+    <h3>Goal</h3>
+    <p>Place the <span class="hl-amber">cube</span> on <span class="hl-teal">Table 2</span> and move the robot to the <span class="hl-teal">Exit</span> region while minimizing time.</p>
+  </div>
+  <div class="first-on-mobile">
+    <img src="diagram_4_actions.png" alt="Pick and place setup diagram">
+  </div>
+</div>
+
+<h3>Symbolic plan</h3>
+<div class="math">
+  $$
+  \begin{aligned}
+  \pi_{p\&amp;p} =&amp;\; \mathrm{moveTo}(Start, \textcolor{#0f766e}{\mathbf{Table_1}}),\; \mathrm{grasp}(\textcolor{#b58900}{\mathbf{Cube}}, Table_1), \\
+  &amp;\; \mathrm{moveTo}(Table_1, \textcolor{#0f766e}{\mathbf{Table_2}}),\; \mathrm{place}(\textcolor{#b58900}{\mathbf{Target}}, Table_2),\; \mathrm{moveTo}(Table_2, \textcolor{#0f766e}{\mathbf{Exit}})
+  \end{aligned}
+  $$
+</div>
+
+<h3>Cross-entropy optimization and best simulation</h3>
+<div class="cols">
+  <div>
+    <h4 class="eyebrow">Case 1: Rectangular obstacle</h4>
+    <p>The robot routes around the obstacle. Alternative paths exist, but take longer.</p>
+    <figure><video src="ce_pick_and_place_rectangle.mp4" width="960" height="720" data-autoplay controls loop muted playsinline preload="none"></video><figcaption>Cross-entropy optimization rollouts.</figcaption></figure>
+    <figure><video src="x3_PandP_rectangle_obstacle.mp4" width="1280" height="720" data-autoplay controls loop muted playsinline preload="none"></video><figcaption>Best simulated realization.</figcaption></figure>
+  </div>
+  <div>
+    <h4 class="eyebrow">Case 2: Ramp obstacle</h4>
+    <p>The ramp lets the cube slide to Table 2, shortening the robot path to the exit.</p>
+    <figure><video src="ce_pick_and_place_ramp.mp4" width="960" height="720" data-autoplay controls loop muted playsinline preload="none"></video><figcaption>Cross-entropy optimization rollouts.</figcaption></figure>
+    <figure><video src="x3_PandP_ramp_obstacle.mp4" width="1280" height="720" data-autoplay controls loop muted playsinline preload="none"></video><figcaption>Best simulated realization.</figcaption></figure>
+  </div>
+</div>
+
+<h3>Real-world execution for Case 2: Ramp obstacle</h3>
+<figure><video src="p_and_p_real.mp4" width="1280" height="720" data-autoplay controls loop muted playsinline preload="none"></video><figcaption>Ramp setup executed on the real robot.</figcaption></figure>
+
+<h2>P2: Move and Push</h2>
+<div class="cols">
+  <div>
+    <h3>Setting</h3>
+    <p>A vertical stick with a <span class="hl-red">red cube</span> on top stands near an open box.</p>
+    <h3>Goal</h3>
+    <p>Push the stick so the cube falls inside the box while minimizing time.</p>
+    <p>We denote the stick location as <span class="hl-teal">$\mathbf{rod_{loc}}$</span> and the push target as <span class="hl-amber">$\mathbf{rod_{p}}$</span>.</p>
+  </div>
+  <div class="first-on-mobile">
+    <img src="move_and_push_diagram.png" alt="Move and push setup diagram">
+  </div>
+</div>
+
+<h3>Symbolic plan</h3>
+<div class="math">
+  $$
+  \pi_{m\&amp;p} = \mathrm{moveTo}(Start, \textcolor{#0f766e}{\mathbf{rod_{loc}}}),\; \mathrm{push}(rod_{loc}, \textcolor{#b58900}{\mathbf{rod_{p}}})
+  $$
+</div>
+
+<h3>Cross-entropy optimization and best simulation</h3>
+<div class="cols">
+  <div>
+    <h4 class="eyebrow">Case 1: Box between robot and stick</h4>
+    <p>The robot routes around the box and pushes the stick with minimal extra motion.</p>
+    <figure><video src="ce_push_stick_left_box_between.mp4" width="960" height="720" data-autoplay controls loop muted playsinline preload="none"></video><figcaption>Cross-entropy optimization rollouts.</figcaption></figure>
+    <figure><video src="x3_push_stick_on_left.mp4" width="1280" height="720" data-autoplay controls loop muted playsinline preload="none"></video><figcaption>Best simulated realization.</figcaption></figure>
+  </div>
+  <div>
+    <h4 class="eyebrow">Case 2: Stick on the right</h4>
+    <p>The robot approaches from the correct angle and pushes directly.</p>
+    <figure><video src="ce_push_stick_right.mp4" width="960" height="720" data-autoplay controls loop muted playsinline preload="none"></video><figcaption>Cross-entropy optimization rollouts.</figcaption></figure>
+    <figure><video src="x3_push_stick_on_right.mp4" width="1280" height="720" data-autoplay controls loop muted playsinline preload="none"></video><figcaption>Best simulated realization.</figcaption></figure>
+  </div>
+</div>
+
+<h3>Real-world execution for Case 2: Stick on the right</h3>
+<figure><video src="push_real.mp4" width="1280" height="720" data-autoplay controls loop muted playsinline preload="none"></video><figcaption>Stick on the right, robot starts in front of both objects.</figcaption></figure>
+

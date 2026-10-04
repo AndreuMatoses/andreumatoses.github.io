@@ -1,0 +1,36 @@
+---
+title: "SADCHER: Scheduling using Attention-based Dynamic Coalitions of Heterogeneous Robots in Real-Time"
+venue: "IEEE Int. Symposium on Multi-Robot and Multi-Agent Systems (MRS) 2025"
+authors:
+    - name: "Jakob Bichler"
+      url: "https://github.com/jakbichler"
+      superscript: "1"
+    - name: "Andreu Matoses Gimenez"
+      url: "https://andreumatoses.github.io/"
+      superscript: "1"
+    - name: "Javier Alonso-Mora"
+      url: "https://autonomousrobots.nl/people/"
+      superscript: "1"
+affiliations:
+    - name: "TU Delft"
+      superscript: "1"
+      url: "https://tudelft.nl"
+date: 2025-10-01
+description: "Sadcher is a real-time, imitation-learned task assignment framework for heterogeneous multi-robot teams with dynamic coalitions and task precedence. It predicts robot-task rewards using graph attention and transformers, then applies relaxed bipartite matching to produce feasible, high-quality schedules that scale and outperform learning/heuristic baselines; we also release a dataset of 250k optimal schedules."
+cover: opening_image1x1.png
+links:
+    - name: arXiv
+      icon: bi-file-earmark-pdf
+      url: "https://arxiv.org/abs/2510.14851"
+    - name: Code (Pytorch) 
+      icon: bi-github
+      url: "https://github.com/jakbichler" 
+    - name: Dataset 
+      icon: bi-file-text
+      url: "https://data.4tu.nl/datasets/10e28ee0-9ad9-450d-8be7-6e6a91f2931f" 
+    - name: MSc Thesis
+      icon: bi-file-text
+      url: "https://resolver.tudelft.nl/uuid:d90491cd-cf57-4d29-b38d-88df646ab301"
+# This project has its own website; the homepage card links there.
+external_url: "https://autonomousrobots.nl/paper_websites/sadcher_MRTA"
+---

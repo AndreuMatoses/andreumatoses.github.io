@@ -19,6 +19,10 @@ high-res (2560 px) widths, in light and dark mode. To render only some pages:
 `RENDER_PAGES=/,/publications/ docker compose run --rm -e RENDER_PAGES renders`.
 
 Drafts (`draft: true` in the front matter) show in the dev server, but not on the live site.
+The dev server builds into `_dev/`; tests and the live site build into `_site/`.
+
+The site follows the light/dark setting of the visitor's system. The sun/moon button at the top
+right switches the theme; the browser remembers the choice.
 
 ## Deploy
 

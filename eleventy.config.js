@@ -10,6 +10,8 @@ import filters from "./_config/filters.js";
 import site from "./_data/site.json" with { type: "json" };
 
 const RESEARCH = "content/research";
+// The dev server builds into _dev/ (docker-compose.yaml), so it can run next to a test build in _site/.
+const OUTPUT = process.env.SITE_OUTPUT || "_site";
 const MEDIA = "{mp4,webm,pdf,jpg,jpeg,png,gif,svg,webp}";
 
 // Each research folder is published at /<folder>/, so its name must not clash
@@ -59,7 +61,7 @@ export default function (eleventyConfig) {
     formats: ["avif", "webp", "auto"],
     widths: [480, 960, 1600],
     svgShortCircuit: true,
-    outputDir: "_site/img/",
+    outputDir: `${OUTPUT}/img/`,
     urlPath: "/img/",
     htmlOptions: {
       imgAttributes: { loading: "lazy", decoding: "async", sizes: "(min-width: 1180px) 1100px, 100vw" },
@@ -75,7 +77,7 @@ export default function (eleventyConfig) {
   eleventyConfig.addPlugin(filters);
 
   return {
-    dir: { input: "content", includes: "../_includes", data: "../_data", output: "_site" },
+    dir: { input: "content", includes: "../_includes", data: "../_data", output: OUTPUT },
     templateFormats: ["md", "html", "liquid", "njk"], // njk: the feed plugin template
     markdownTemplateEngine: "liquid",
     htmlTemplateEngine: "liquid",

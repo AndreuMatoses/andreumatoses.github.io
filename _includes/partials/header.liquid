@@ -5,6 +5,7 @@
       {%- for item in navigation %}
       <li><a href="{{ item.link }}"{% if page.url == item.link %} aria-current="page"{% endif %}>{{ item.name }}</a></li>
       {%- endfor %}
+      <li><button class="theme-toggle" type="button" aria-label="Switch between light and dark theme" title="Light / dark theme">{{ "sun" | icon }}<span aria-hidden="true">/</span>{{ "moon-stars" | icon }}</button></li>
     </ul>
   </nav>
 </header>

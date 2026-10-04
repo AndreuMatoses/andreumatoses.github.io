@@ -20,6 +20,21 @@ if (!reducedMotion && "IntersectionObserver" in window) {
   }
 }
 
+// Light/dark theme button. A stored choice is applied in <head> (base.liquid) before the page paints.
+// Choosing the same theme as the system setting clears the choice, so the page follows the system again.
+document.querySelector(".theme-toggle")?.addEventListener("click", () => {
+  const root = document.documentElement;
+  const systemDark = matchMedia("(prefers-color-scheme: dark)").matches;
+  const nowDark = root.dataset.theme ? root.dataset.theme === "dark" : systemDark;
+  const next = nowDark ? "light" : "dark";
+  try {
+    if ((next === "dark") === systemDark) localStorage.removeItem("theme");
+    else localStorage.setItem("theme", next);
+  } catch {}
+  if ((next === "dark") === systemDark) delete root.dataset.theme;
+  else root.dataset.theme = next;
+});
+
 document.addEventListener("click", async (event) => {
   // Abstract / BibTeX panels on the publications page.
   const toggle = event.target.closest("button.toggle");

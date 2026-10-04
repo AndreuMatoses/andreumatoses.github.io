@@ -159,6 +159,21 @@ test.describe("in the browser", () => {
     await expect(page.locator("h1")).toContainText("Hybrid Flow Matching");
   });
 
+  test("theme button switches and remembers the theme", async ({ page }) => {
+    const bg = () => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+    await page.emulateMedia({ colorScheme: "light" });
+    await page.goto("/");
+    expect(await bg()).toBe("rgb(255, 255, 255)");
+    await page.getByRole("button", { name: /light and dark/ }).click();
+    expect(await bg()).toBe("rgb(18, 18, 18)");
+    await page.goto("/publications/");
+    expect(await bg()).toBe("rgb(18, 18, 18)");
+    // Back to light = same as the system, so the stored choice is cleared.
+    await page.getByRole("button", { name: /light and dark/ }).click();
+    expect(await bg()).toBe("rgb(255, 255, 255)");
+    expect(await page.evaluate(() => localStorage.getItem("theme"))).toBeNull();
+  });
+
   test("dark mode follows the system setting", async ({ page }) => {
     await page.emulateMedia({ colorScheme: "dark" });
     await page.goto("/");

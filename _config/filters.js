@@ -36,7 +36,7 @@ async function ogImage(src, shape) {
   const stats = await Image(`content/${src}`, {
     widths: [width],
     formats: ["jpeg"],
-    outputDir: "_site/img/",
+    outputDir: `${process.env.SITE_OUTPUT || "_site"}/img/`,
     urlPath: "/img/",
     filenameFormat: (id, _src, width, format) => `og-${id}-${width}.${format}`,
     transform: (sharp) => sharp.resize({ width, height, fit: "cover", position: "attention" }),

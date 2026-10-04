@@ -13,7 +13,7 @@ before content tasks. It is not published.
 ## Commands (Docker only; Node is not installed on the host)
 
 ```shell
-docker compose up                   # dev server, live reload, http://localhost:8080
+docker compose up                   # dev server, live reload, http://localhost:8080 (builds into _dev/)
 docker compose run --rm test        # build + all tests (tests/site.spec.js)
 docker compose run --rm renders     # build + screenshots of every page -> renders/*.png
 RENDER_PAGES=/,/publications/ docker compose run --rm -e RENDER_PAGES renders   # some pages only
@@ -21,7 +21,8 @@ RENDER_PAGES=/,/publications/ docker compose run --rm -e RENDER_PAGES renders   
 
 For an agent: after a change, run `test`, then `renders` for the pages you touched, and **look at the
 PNGs** (phone/laptop/wide, light/dark) before you call a visual change done. Eleventy does not clear
-`_site/`; stale files there can hide a broken link locally (CI builds from scratch).
+`_site/`; stale files there can hide a broken link locally (CI builds from scratch). The dev server
+writes to `_dev/` (it also renders drafts), so it never pollutes the test build in `_site/`.
 
 ## Layout
 
@@ -55,8 +56,10 @@ tests/                 serve.js (GitHub-Pages-like static server), pages.js, sit
 
 ## Styling
 
-- One file, `public/css/style.css`. Tokens on `:root`; dark mode only redefines tokens under
-  `prefers-color-scheme: dark`. Keep new colors as tokens and give them a dark value.
+- One file, `public/css/style.css`. Color tokens on `:root` as `light-dark(light, dark)`. The page
+  follows the system setting; the sun/moon button in the header sets `data-theme` on `<html>` (stored
+  in localStorage, applied by an inline script in `base.liquid` before paint), which sets `color-scheme`.
+  Keep new colors as tokens with both values.
 - Page grid `.flow`: text in a ~68ch column, figures/`.cols`/`.wide`/tables in a 1120 px column.
   `.flow-wide` (home, publications) puts everything in the wide column.
 - Fonts: Source Serif 4 (body) + Inter (headings), self-hosted variable WOFF2 (latin subset) in
@@ -77,7 +80,7 @@ tests/                 serve.js (GitHub-Pages-like static server), pages.js, sit
 - Every page needs one `<h1>`, a `description` of 40+ characters, and an image for link previews.
   The tests check this, plus links, HTML validity, axe a11y, no sideways scroll at 360 px, and the
   homepage weight (< 1.5 MB).
-- Do not hand-edit `_site/`. Do not commit `renders/`, `media-originals/`, `node_modules/`, `.cache/`.
+- Do not hand-edit `_site/`. Do not commit `_dev/`, `renders/`, `media-originals/`, `node_modules/`, `.cache/`.
 
 ## Git workflow
 

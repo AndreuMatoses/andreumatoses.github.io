@@ -1,7 +1,3 @@
-# Homepage news, newest first. `text` may contain HTML links; quote it if it contains ": ".
-- date: July 2026
-  text: I will be attending the Cambridge Ellis Unit Summer School on Probabilistic Machine Learning.
-- date: December 2025
-  text: 'I will be presenting our work "SADCHER: Scheduling using Attention-based Dynamic Coalitions of Heterogeneous Robots in Real-Time" at MRS 2025, Singapore.'
-- date: October 2025
-  text: Our workshop paper "Decentralized Aerial Manipulation of Cable-Suspended Load Using Multi-Agent RL" won best poster award at Cooperative Systems and Swarm Robotics in the Era of Generative IA, IROS 2025.
+# Homepage news, newest first (at most 3). `text` may contain HTML links; quote it if it contains ": ".
+- date: November 2026
+  text: I will be visiting Princeton University in the group of Prof. <a href="https://tomsilver.github.io/">Tom Silver</a>, starting in November.

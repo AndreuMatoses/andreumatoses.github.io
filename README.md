@@ -161,7 +161,7 @@ the venue.
 ## Edit the homepage, news, menu and contact links
 
 - Bio: `content/index.html`.
-- News: `_data/news.yaml`, newest first. Put the text in quotes if it contains `: `.
+- News: `_data/news.yaml`, newest first, at most 3 (they show in one row). Put the text in quotes if it contains `: `.
 - Menu: `_data/navigation.yaml`. Contact icons: `_data/socials.yaml`.
 - Name, description, email: `_data/site.json`.
 

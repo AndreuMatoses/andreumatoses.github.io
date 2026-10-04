@@ -4,8 +4,11 @@ description: Andreu Matoses Gimenez, PhD candidate in planning for robotics at T
 ---
 <div class="home flow flow-wide">
   <section class="intro">
-    <div class="intro-text">
+    <div class="intro-head">
+      <img class="portrait" src="/img/profile.jpg" alt="Portrait of {{ site.author }}" loading="eager" fetchpriority="high" eleventy:widths="200,400" sizes="(min-width: 760px) 190px, 84px">
       <h1>Andreu Matoses Gimenez</h1>
+    </div>
+    <div class="intro-text">
       <p>
         I am a PhD candidate in planning for robotics at the Department of Cognitive Robotics (CoR), TU Delft (Netherlands).
         My research currently focuses on using generative models and physics simulation for task and motion planning problems.
@@ -15,16 +18,12 @@ description: Andreu Matoses Gimenez, PhD candidate in planning for robotics at T
         Before my PhD, I obtained my bachelor's degree in aerospace engineering from Universitat Politècnica de València (Spain),
         and a master's degree from KTH Royal Institute of Technology (Sweden). During my MSc, I worked as a research engineer at KTH.
       </p>
-      <p>Contact me at <a href="mailto:{{ site.email }}">{{ site.email }}</a></p>
-    </div>
-    <div class="intro-photo">
-      <img class="portrait" src="/img/profile.jpg" alt="Portrait of {{ site.author }}" loading="eager" fetchpriority="high" eleventy:widths="320,640" sizes="(min-width: 760px) 220px, 60vw">
-      {% include "partials/socials.liquid" %}
+      <div class="contact"><a href="mailto:{{ site.email }}">{{ site.email }}</a>{% include "partials/socials.liquid" %}</div>
     </div>
   </section>
 
   <section class="news" aria-labelledby="news">
-    <h2 id="news">News</h2>
+    <h2 id="news" class="visually-hidden">News</h2>
     <ul>
       {%- for item in news %}
       <li><strong>{{ item.date }}</strong> {{ item.text }}</li>

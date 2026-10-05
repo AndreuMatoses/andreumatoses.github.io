@@ -1,3 +1,10 @@
 _site/
+_dev/
+.cache/
+node_modules/
+renders/
+test-results/
+playwright-report/
 .vscode
 .env
+media-originals/

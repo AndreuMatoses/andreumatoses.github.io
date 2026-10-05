@@ -1,18 +1,35 @@
-services:
-  jekyll:
-    # The `pages` tag matches the github-pages gem (Jekyll 3.x); the default tag now ships
-    # Jekyll 4 on Ruby 3.4, which cannot install the gems pinned in Gemfile.lock.
-    image: jekyll/jekyll:pages
-    environment:
-      JEKYLL_UID: "${JEKYLL_UID:-1000}"
-      JEKYLL_GID: "${JEKYLL_GID:-1000}"
-    volumes:
-      - .:/srv/jekyll
-      - jekyll_gems:/usr/local/bundle
-    ports:
-      - "4000:4000"
-    # network_mode: host
-    command: sh -c "bundle install && bundle exec jekyll serve --host 0.0.0.0 --livereload"
+# docker compose up                  -> dev server with live reload on http://localhost:8080
+# docker compose run --rm test       -> build, then run the test suite (tests/)
+# docker compose run --rm renders    -> build, then save screenshots of every page to renders/
+x-node: &node
+  working_dir: /app
+  user: "${UID:-1000}:${GID:-1000}"
+  environment:
+    HOME: /tmp
+    npm_config_cache: /app/.cache/npm
+  volumes:
+    - .:/app
 
-volumes:
-  jekyll_gems:
+services:
+  site:
+    <<: *node
+    image: node:22-bookworm-slim
+    ports:
+      - "8080:8080"
+    environment:
+      HOME: /tmp
+      npm_config_cache: /app/.cache/npm
+      SITE_OUTPUT: _dev        # keep _site/ for test builds
+    command: sh -c "npm install --no-audit --no-fund && npx @11ty/eleventy --serve --port=8080"
+
+  test:
+    <<: *node
+    image: mcr.microsoft.com/playwright:v1.63.0-noble
+    profiles: ["tools"]
+    command: sh -c "npm install --no-audit --no-fund && npx @11ty/eleventy --quiet && npx playwright test"
+
+  renders:
+    <<: *node
+    image: mcr.microsoft.com/playwright:v1.63.0-noble
+    profiles: ["tools"]
+    command: sh -c "npm install --no-audit --no-fund && npx @11ty/eleventy --quiet && npm run renders"

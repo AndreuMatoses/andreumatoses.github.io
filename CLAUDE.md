@@ -4,175 +4,88 @@ Guidance for AI assistants working in this repo.
 
 ## What this is
 
-A personal academic website (Andreu Matoses Gimenez) built with **Jekyll** and
-hosted on **GitHub Pages**. Pushing to `main` triggers the GitHub Pages build —
-there is no separate CI. This is a personal site: favor simplicity and easy
-content editing over abstraction, defensive coding, or heavy comments.
+A personal academic website (Andreu Matoses Gimenez), built with **Eleventy 3** (Liquid templates)
+and deployed to **GitHub Pages by GitHub Actions** (`.github/workflows/deploy.yml`: build → Playwright
+tests → deploy, on `main` only). Plain CSS and a small JS file, no framework. Favor simplicity and easy
+content editing over abstraction. `README.md` is the user-facing "how to add content" guide; read it
+before content tasks. It is not published.
 
-The `README.md` is the user-facing "how to add content" guide (and is itself
-served as a page at `/readme/`). This file is the maintainer/AI-facing map.
-
-## Running locally
+## Commands (Docker only; Node is not installed on the host)
 
 ```shell
-docker compose up   # serves http://localhost:4000 with livereload
+docker compose up                   # dev server, live reload, http://localhost:8080 (builds into _dev/)
+docker compose run --rm test        # build + all tests (tests/site.spec.js)
+docker compose run --rm renders     # build + screenshots of every page -> renders/*.png
+RENDER_PAGES=/,/publications/ docker compose run --rm -e RENDER_PAGES renders   # some pages only
 ```
 
-Uses the `jekyll/jekyll` Docker image, so no local Ruby needed. `Gemfile` pins
-the `github-pages` gem to match Pages' environment. Note the local Ruby toolchain
-in this container is too new for the pinned Jekyll 3.x, so prefer Docker (or just
-trust the Pages build) over `bundle exec jekyll` here.
+For an agent: after a change, run `test`, then `renders` for the pages you touched, and **look at the
+PNGs** (phone/laptop/wide, light/dark) before you call a visual change done. Eleventy does not clear
+`_site/`; stale files there can hide a broken link locally (CI builds from scratch). The dev server
+writes to `_dev/` (it also renders drafts), so it never pollutes the test build in `_site/`.
 
-**Local build ≠ Pages build.** The vanilla `jekyll/jekyll` image does *not* run the
-plugins GitHub Pages injects (`jekyll-optional-front-matter`, `jekyll-readme-index`,
-`jekyll-relative-links`, `jekyll-titles-from-headings`, …). The big gotcha:
-`jekyll-optional-front-matter` renders markdown files **even without front matter**
-through Liquid on Pages. So any `.md` containing `{% … %}`/`{{ … }}` (e.g. this file's
-include examples) is parsed as real Liquid on Pages and can crash the build, even
-though it's copied verbatim locally. Dev-only markdown like `CLAUDE.md` is therefore
-listed under `exclude:` in `_config.yml`. If you add another such doc, exclude it too.
-
-## Layout of the codebase
+## Layout
 
 ```
-_config.yml            Site config: title, collections, plugins, defaults
-_data/
-  navigation.yml       Top nav links (supports nested subpages)
-  socials.yml          Social/contact icons (Bootstrap Icons)
-  publications.json    ALL publications live here (see README for schema)
-_layouts/
-  base.html            <html>/<head>: CSS, fonts, MathJax, analytics
-  default.html         base + navbar + centered container + footer
-  page.html            Simple titled page (used for /pages/*.html by default)
-  paper.html           Research/project pages (authors, links, body)
-  post.html            Blog posts (date, optional collapsible TOC)
-_includes/             Reusable snippets (see below)
-_research/             One file per research project -> its own page
-_posts/                Blog posts (YYYY-MM-DD-title.md)
-assets/css|js|images|files|icons
-index.html             Homepage (bio, news, research list)
-publications.html      Publications page + inline search
-education.html         The "Teaching" page (permalink /teaching/)
-posts.html             Blog index (permalink /posts/)
-404.html
+eleventy.config.js     plugins, passthrough copy, collections, slug-clash check
+_config/               filters.js (icon, ogImage, publicationList, toc, ...), bibtex.js (own small
+                       .bib parser), markdown-math.js (keeps $..$ away from markdown)
+_data/                 site.json, news.yaml, navigation.yaml, socials.yaml, redirects.yaml,
+                       publications.bib (parsed by _config/bibtex.js into `publications`)
+_includes/layouts/     base.liquid -> page | project | post
+_includes/partials/    seo, header, footer, socials, project-card, publication, bibtex, figure, gallery
+_includes/icons/       SVGs inlined by the `icon` filter (Bootstrap Icons names, `bi-` prefix optional)
+content/               input dir. research/<slug>/ = one project (page + media); posts/<dated>/
+public/                copied to the site root: css/style.css, js/site.js, fonts/, favicon.png
+scripts/media.sh       ffmpeg recipes (web, cover, poster)
+tests/                 serve.js (GitHub-Pages-like static server), pages.js, site.spec.js, renders.spec.js
 ```
 
-### Layout inheritance
-`base.html` → `default.html` → (`page.html` | `paper.html` | `post.html`).
-Defaults in `_config.yml` auto-assign layouts:
-- everything → `default`
-- `pages` → `page`
-- `_research/*` → `paper` (+ `usemathjax: true`)
-- `_posts/*` → `post` (+ `usemathjax`, `show_toc`)
+### How the pieces connect
+- `content/research/research.11tydata.js` gives every project the `project` layout, the permalink
+  `/<slug>/` (or none if `external_url` is set), and `og_source` (cover.poster.jpg or the cover image).
+- Media in a project folder is passthrough-copied to `/<slug>/` (flat: no subfolders). Write media
+  paths as plain file names. `<img>` tags are processed by the eleventy-img transform (AVIF/WebP,
+  srcset, width/height, lazy) into `/img/`; absolute `src` paths resolve from `content/`.
+- `bibkey:` on a project page pulls the entry from `publications.bib` for the Citation block and the
+  Google Scholar `citation_*` meta tags.
+- Link previews: `ogImage` filter crops a 1200×630 JPEG (or 600×600 with "square" for non-project pages).
+- MathJax 4 (CDN) is added only when `hasMath` finds math in the rendered page (`math: true|false` overrides).
+- `redirects.yaml` → `content/redirects.liquid` writes stub pages (canonical + meta refresh + og tags).
+  A `from` without a trailing slash becomes `<from>.html` (GitHub Pages serves it without `.html`).
 
-So a new `.html`/`.md` at the repo root just needs `title:` and `permalink:` —
-the `page` layout is applied automatically.
+## Styling
 
-### Key includes
-- `project_card.html` — brutalist card for a research item (homepage list). Reads
-  `title, authors, date, venue, description, cover_image, url, links`.
-- `publication_item.html` — one publication row on the publications page.
-- `navigation.html` / `footer.html` — nav bar and footer (both render socials).
-- `figure.html` — centered responsive image: `{% include figure.html src=… width=… alt=… caption=… %}`
-- `gallery.html` — image/video grid: `{% include gallery.html images=page.x n_columns=2 caption=… %}`
-- `fix_link.html` — normalizes a link: passes external `://` URLs through, prepends
-  `relative_url` to local paths. Use it for any asset/file link so it works under
-  the site baseurl. `toc.html` is a vendored third-party TOC generator — don't edit.
+- One file, `public/css/style.css`. Color tokens on `:root` as `light-dark(light, dark)`. The page
+  follows the system setting; the sun/moon button in the header sets `data-theme` on `<html>` (stored
+  in localStorage, applied by an inline script in `base.liquid` before paint), which sets `color-scheme`.
+  Keep new colors as tokens with both values.
+- Page grid `.flow`: text in a ~68ch column, figures/`.cols`/`.wide`/tables in a 1120 px column.
+  `.flow-wide` (home, publications) puts everything in the wide column.
+- Fonts: Source Serif 4 (body) + Inter (headings), self-hosted variable WOFF2 (latin subset) in
+  `public/fonts/`, OFL licenses next to them.
+- Theme: black borders/lines (`--accent`), brutalist cards with a light gray offset shadow
+  (`--shadow`), blue links (`--link`).
 
-## Common content tasks
+## Conventions and gotchas
 
-- **Add a publication:** append an object to `_data/publications.json`. Ordering is
-  by `date` (newest first), grouped by year and `type` (`journal|conference|workshop|thesis|other`).
-- **Add a research project:** create `_research/<slug>.md` (or `.html`) with the same
-  frontmatter shape as existing files. It becomes a `paper`-layout page and appears
-  on the homepage research list. Set `ignore: true` to hide it, `redirect_to: <url>`
-  to bounce the page elsewhere (via `jekyll-redirect-from`).
-- **Add a blog post:** create `_posts/YYYY-MM-DD-title.md`. TOC and MathJax are on by default.
-- **Edit homepage bio / news:** edit `index.html` directly (news is a hand-written `<ul>`).
-- **Nav / socials / site title:** `_data/navigation.yml`, `_data/socials.yml`, `_config.yml`.
-- **Link a local asset:** put it under `assets/`, then `{% include fix_link.html link='/assets/…' %}`
-  (or `{{ '/assets/…' | relative_url }}` in markdown).
-
-Both `.md` and `.html` work for research/posts — pick whichever is convenient and
-keep the frontmatter consistent. MathJax uses `$…$` (inline) and `$$…$$` (display).
-
-## Styling / CSS
-
-- **Framework: Bootstrap 5**, vendored (not via CDN): `assets/css/bootstrap.css` +
-  `assets/js/bootstrap.bundle.min.js`. Layout uses BS5 utilities heavily
-  (`data-bs-toggle`, `bg-body-tertiary`, grid, spacing helpers).
-- **Custom styles: `assets/css/style.scss`** — has empty `---` frontmatter so Jekyll's
-  built-in Sass compiles it to `/assets/css/style.css` (referenced in `base.html`).
-  Edit the `.scss`, never a generated `.css`. Notable custom pieces:
-  - `.brutalist-card` — neo-brutalist offset-shadow card used for project cards
-    (modifiers: `push-on-hover`, `shadow-on-hover`, `shadow-color-*`).
-  - `.timeline`, `.news-list`, `.line-clamp-3`, `.link-underline-hover`, black text selection.
-  - Responsive image tweaks (`.profile-img`, `.project-card-media`) via `@media` breakpoints.
-  - Accent color is blue `#006bcf` (`a`, `.accent-color`).
-- **Syntax highlighting:** `assets/css/codehighlight.css` (Rouge classes).
-- **Fonts (Google Fonts, in `base.html`):** Poppins = body, Montserrat = titles/navbar.
-- **Icons:** Bootstrap Icons 1.11.2 via CDN. **MathJax** and **Google Fonts** also via CDN.
-
-## Non-standard / questionable things — do NOT perpetuate
-
-Be critical about these rather than copying the pattern:
-
-- **`assets/js/custom.js` is dead code.** It's a leftover from the "Source Themes
-  Academic" theme, is never loaded by any layout, and references a `publications`
-  array / `publications-container` element that don't exist. The real publications
-  search is the inline `<script>` at the bottom of `publications.html`. Safe to delete.
-- **Contact email:** the address `A.MatosesGimenez@tudelft.nl` appears in
-  `_data/socials.yml` (as a `mailto:`) and in `index.html` (as display text). Keep the
-  two in sync, and never put a literal `(at)` inside a `mailto:` href — it breaks the link.
-- **`Public Sans` font is fetched but never used** (loaded in `base.html`, absent from
-  the SCSS). Drop it from the Google Fonts URL to save a request.
-- **`bootstrap.css.map` (~680 KB) is committed** — a sourcemap that ships nothing at
-  runtime. It can be removed.
-- **Mixed vendoring strategy:** Bootstrap CSS/JS are vendored but Bootstrap Icons,
-  fonts, and MathJax come from CDNs. Fine for a personal site, but it means the page
-  isn't fully self-hosted/offline-reproducible — keep in mind before claiming otherwise.
-- **`education.html` serves the `/teaching/` page** (filename ≠ URL ≠ nav label
-  "Teaching"). Not broken, just confusing; renaming to `teaching.html` would help.
-- **Template scaffolding still present:** `_research/example.md` and
-  `_posts/2023-12-19-welcome-to-jekyll.md` are examples, not real content.
-- **`paper.html` uses `{{ page.content }}` instead of the idiomatic `{{ content }}`.**
-  It happens to render correctly here (verified: markdown and includes are processed),
-  so leave it — but prefer `{{ content }}` in any new layout.
-- The publications search JS manipulates the DOM directly and is O(n²)-ish; the code
-  itself flags this. It works and n is small — don't over-engineer it.
-
-## Conventions
-
-- Keep comments sparse and content easy to edit; this is a personal site.
-- When adding a page, rely on the `_config.yml` layout defaults instead of setting
-  `layout:` manually unless you need a specific one.
-- Route every local asset/file link through `fix_link.html` or `relative_url`.
-- Don't hand-edit generated output (`_site/`, compiled `*.css`); `_site/` is gitignored.
-
-## Media (images / videos)
-
-Videos are plain `<video>` tags pointing at files under `assets/images/papers/…`.
-Two encoding gotchas that make a video show as a **gray, unplayable box** in browsers
-even though the file is fine locally:
-- **H.264 level too high.** Browsers refuse to decode a stream whose level exceeds
-  their decoder's support. A bogus/huge frame-rate tag (e.g. a phone export claiming
-  1200 fps) inflates the level to 6.0. Keep videos at a normal fps and level ≤ 4.x.
-- Prefer web-safe encodes: H.264 **High/Main, `yuv420p`, level ≤ 4.0, 30–60 fps**, and
-  `-movflags +faststart`. Re-encode with:
-  `ffmpeg -i in.mp4 -r 60 -c:v libx264 -profile:v high -level 4.0 -pix_fmt yuv420p -crf 23 -an -movflags +faststart out.mp4`
-
-For responsive images capped at a max width, put the cap on a wrapper div
-(`<div class="mx-auto" style="max-width:700px">`) and keep the `<img>` as `img-fluid` —
-don't put a fixed `max-width` inline on an `img-fluid` image, it overrides the `100%`
-cap and the image stops shrinking on phones.
+- Liquid here is liquidjs with `jsTruthy: true` (so `""` is false). Includes need quoted names:
+  `{% include "partials/figure.liquid", src: "x.jpg" %}`. There is no `include.` prefix.
+- Escape text that comes from `publications.bib` in templates (`| escape`); `&` in titles breaks HTML.
+- In HTML pages, write `&amp;` for a literal `&` inside `$$…$$` math (MathJax still reads it as `&`).
+- YAML data files: quote a value that contains `: `.
+- Card covers (`cover:`) are shown in their own shape, never cropped. Ask for / make 4:3 covers
+  when possible (e.g. 640×480) so the cards look even.
+- Videos: H.264, level ≤ 4.0, yuv420p, ≤ 30 fps, `+faststart` (`scripts/media.sh`). Give each `<video>`
+  `width`/`height` and a poster: every `X.mp4` has `X.poster.jpg` (`scripts/media.sh poster X.mp4`; a
+  test checks it). Use `data-autoplay … preload="none"` for clips; `site.js` plays them while visible.
+- Every page needs one `<h1>`, a `description` of 40+ characters, and an image for link previews.
+  The tests check this, plus links, HTML validity, axe a11y, no sideways scroll at 360 px, and the
+  homepage weight (< 1.5 MB).
+- Do not hand-edit `_site/`. Do not commit `_dev/`, `renders/`, `media-originals/`, `node_modules/`, `.cache/`.
 
 ## Git workflow
 
-- Small fixes (docs, typos, content edits, small tweaks) can be committed and
-  pushed **directly to `main`** — no branch/PR needed. Pushing to `main` triggers
-  the Pages deploy.
-- Only create a feature branch (and PR) for **significant** changes — new
-  sections/layouts, restructuring, or anything you'd want to review before it goes live.
-- **Batch edits into one themed commit.** Every push to `main` retriggers the Pages
-  build, so don't commit/push after each small edit — group related changes and commit
-  once when a coherent chunk of work is done. Push when the batch is ready, not per-file.
+- Small fixes (content, typos, small tweaks) can go **directly to `main`**. Pushing to `main` deploys.
+- Create a branch and PR only for **significant** changes (layouts, structure, design).
+- **Batch edits into one themed commit**; push when a coherent chunk is done, not per file.

@@ -1,200 +1,198 @@
----
-layout: post
-permalink: /readme/
----
+# Andreu's academic website
 
-# Andreu's personal academic website
+Source of [andreumatoses.github.io](https://andreumatoses.github.io). The site is built with
+[Eleventy](https://www.11ty.dev/), uses plain CSS and a few lines of JavaScript, and is deployed to
+GitHub Pages by GitHub Actions. Feel free to use it as a template; please keep a link to this repository.
 
-This is the repository for my personal academic website. The website is built using Jekyll and hosted on GitHub Pages. The website uses [Bootstrap](https://getbootstrap.com/) and my own custom CSS for styling. Feel free to use this repository as a template for your own academic website, just keep the footer reference to this repository.
+## Preview and test
 
-> [!NOTE]  
-> Any file for projects, etc. can be either .md, or .html, just choose the most convenient and maintain the same frontmatter.
+You need Docker only.
 
-- [Andreu's personal academic website](#andreus-personal-academic-website)
-  - [How to preview the website locally](#how-to-preview-the-website-locally)
-  - [Basic Customization](#basic-customization)
-    - [Changing Homepage Content](#changing-homepage-content)
-  - [How to add new entries](#how-to-add-new-entries)
-    - [Research Projects in the Homepage](#research-projects-in-the-homepage)
-    - [Publications](#publications)
-    - [Posts](#posts)
-  - [Utilities (includes)](#utilities-includes)
-    - [Gallery](#gallery)
-    - [Figures](#figures)
-    - [Linking local files and images in your content](#linking-local-files-and-images-in-your-content)
-      - [The easy way](#the-easy-way)
-      - [The manual way](#the-manual-way)
+```shell
+docker compose up                   # dev server with live reload: http://localhost:8080
+docker compose run --rm test        # build, then run all tests
+docker compose run --rm renders     # build, then save screenshots of every page to renders/
+```
 
+The renders are full-page screenshots of each page at phone (390 px), laptop (1440 px) and
+high-res (2560 px) widths, in light and dark mode. To render only some pages:
+`RENDER_PAGES=/,/publications/ docker compose run --rm -e RENDER_PAGES renders`.
 
-## How to preview the website locally
+Drafts (`draft: true` in the front matter) show in the dev server, but not on the live site.
+The dev server builds into `_dev/`; tests and the live site build into `_site/`.
 
-GitHub pages builds the website upon pushing to the `main` branch. However, if you want to preview the website locally before pushing, you can do so by following these steps:
+The site follows the light/dark setting of the visitor's system. The sun/moon button at the top
+right switches the theme; the browser remembers the choice.
 
-1. Fork and then Clone the repository
+## Deploy
 
-2. Install build dependencies (you can also build it with ruby, but it is much easier with docker):
-    - [Docker](https://docs.docker.com/get-docker/)
-    - [Docker Compose](https://docs.docker.com/compose/install/)
+Push to `main`. The workflow in `.github/workflows/deploy.yml` builds the site, runs the tests and
+publishes it. If a test fails, the live site does not change. Other branches and pull requests are
+built and tested, but not published.
 
-3. Run the following command in the root directory of the repository:
+One-time setting: in the repository, go to Settings → Pages and set **Source** to "GitHub Actions".
 
-    ```shell
-    docker compose up
-    ```
+## Where things are
 
-This will launch the website at `http://localhost:4000` with live-reload enabled. Hence, you should be able to make changes to any file and they should appear automatically on your local instance upon saving that file.
+```
+content/                    pages (the URL follows the folder)
+  index.html                homepage: bio, news, research cards
+  publications.html         list from _data/publications.bib
+  teaching.md
+  research/<slug>/          one folder per project: index.md|html + its images, videos, PDFs
+  posts/<date-title>/       blog posts (index.md + images)
+_data/
+  site.json                 name, URL, description, email
+  news.yaml                 homepage news
+  publications.bib          all publications
+  navigation.yaml           top menu
+  socials.yaml              contact icons
+  redirects.yaml            old URLs that forward to new ones
+_includes/                  layouts, partials (figure, gallery, card, ...) and icons
+public/                     copied as-is: css/style.css, js/site.js, fonts, favicon
+scripts/media.sh            ffmpeg recipes for videos
+tests/                      Playwright tests and renders
+```
 
-## Basic Customization
-You can customize the website by changing the `_config.yml` file. This file contains the basic configuration for the website, such as the title, description, and social media links.
+## Add a research project
 
-> [!IMPORTANT]
-> Change the google_analytics key in the `_config.yml` file to your own!!!. Or just remove it if you don't want to use Google Analytics.
+1. Make a folder `content/research/<slug>/`. Use a short lowercase name with hyphens. The page is
+   published at `/<slug>/`, so the name must not be the same as a top-level page (the build stops if it is).
+2. Put the page in `index.md` (or `index.html`) and all its media in the same folder.
+3. Make a cover video `cover.mp4` and its poster `cover.poster.jpg` (see [Media](#images-and-videos)),
+   or use an image as the cover. **Aim for a 4:3 cover** (for example 640×480): the card shows the cover
+   in its own shape without cropping, so other shapes work, but 4:3 makes the cards look even.
 
-You can change your socials in the `_data/socials.yml` file. You can add or remove social media links as needed, with [Bootstrap icons](https://icons.getbootstrap.com/).
-
-You can also change the navigation links in the `_data/navigation.yml` file. You can add or remove navigation links as needed. You can also nest subpages like this:
+Front matter:
 
 ```yaml
-- name: Group
-  link: /group/
-  subpages:
-    - name: People
-      link: /people/
-    - name: Vacancies
-      link: /vacancies/
+---
+title: "Paper title"
+venue: "Conference (ABC) 2026"
+date: 2026-05-01                # sets the order on the homepage
+description: "Two or three sentences for the homepage card and for link previews."
+cover: cover.mp4                # or an image, e.g. teaser.jpg
+bibkey: matoses2026example      # optional: shows the citation from publications.bib
+authors:
+  - name: "Andreu Matoses Gimenez"
+    superscript: "1"
+  - name: "Coauthor Name"
+    url: "https://example.com"
+    superscript: "2"
+affiliations:
+  - name: "Delft University of Technology"
+    url: "https://www.tudelft.nl/en"
+    superscript: "1"
+links:                          # buttons under the title; an empty url shows a disabled button
+  - name: Paper
+    icon: bi-file-earmark-pdf   # Bootstrap Icons name; the SVG must be in _includes/icons/
+    url: paper.pdf              # a file in this folder, or a full URL
+  - name: Code (coming soon)
+    icon: bi-github
+    url: ""
+note: "* Equal contribution."   # optional line under the buttons
+# og_image: teaser.jpg          # optional: image for link previews (default: cover.poster.jpg or the cover image)
+# external_url: https://...     # optional: no page, the card links to this website instead
+# ignore: true                  # optional: hide the project
+---
 ```
 
-### Changing Homepage Content
-The homepage content is stored in the `index.md` file. You can change the content of the homepage by editing this file. Here you can also change the news by hand. 
-
-## How to add new entries
-
-### Research Projects in the Homepage
-Projects are stored in the `_research` directory. To add a new project, create a new file in the `_research` directory. The file should have the front matter structure of the other examples. Each research entry creates its own website page, following the layout of the `_layouts/paper.html` file. I have kept this separate from publications items, as I sometimes add projects that are not a particular publication, or sometimes someone else is hosting the website.
-
-### Publications
-Publications are stored in the `_data/publications.json` file. Juts add yours (at the top for example, they then order by date) and commit. It has the following fields:
-
-- `title`: The title of the publication. This should be a string.
-
-- `authors`: An array of strings, where each string is the name of an author of the publication.
-
-- `date`: The date of the publication in "YYYY-MM-DD" format. If you don't know the day or month, just put any (e.g 2023-01-01).
-
-- `type`: The type of the publication (available: *"journal", "conference", "workshop", "thesis", "other"*.).
-
-- `venue`: The venue where the publication was published (e.g., the name of a journal or conference). Do not put the year.
-
-- `links`: A dictionary, where each object represents a link related to the publication. Each link object should have a name (e.g., "Website":, "PDF": ) and the associated URL.
-
-- `note`: Any additional notes about the publication (e.g. "Nominated for best bets paper award"). This field is optional. is added after the date in the publication entry.
-
-- `image`: (OPTIONAL) The path (or url) to an image file that represents the publication. This image is displayed on the publication's card on the website. **RECOMMENDED: The image should be square (same width and height)**. If you don't have an image, don't add this field.
-
-- `abstract`: The abstract of the publication, as a long string.
-
-Here's an example of what a publication object might look like:
-
-```json
-    {
-        "title": "Physically Grounded Optimal Realizations of Symbolic Plans",
-        "authors": [
-            "Andreu Matoses Gimenez",
-            "Nils Wilde",
-            "Chris Pek",
-            "Javier Alonso-Mora"
-        ],
-        "date": "2024-07-15",
-        "type": "workshop",
-        "venue": "Robotics: Science and Systems (RSS)",
-        "links": [
-            {
-                "pdf": "/assets/files/publications/24_matoses_rss.pdf",
-                "code": "http//github.com"
-            }
-        ],
-        "image": "/assets/images/papers/realization_of_plans/dingo_isaac.png",
-        "key_words": [
-            "interact"
-        ],
-        "abstract": "Robot autonomy often ..."
-    },
-```
-
-A basic search capability is provided in the publications page. You can remove it by setting `show_search: false` in the front matter of the `publications.html` file.
-
-### Posts
-Posts are stored in the `_posts` directory. To add a new post, create a new file in the `_posts` directory. The file should have the front matter structure of the other examples. Each post creates its own website page, following the layout of the `_layouts/post.html` file.
-
-Posts, as well as research projects, can use mathjax for equations. Just put the mathjax code between `$$` symbols. For example:
-
-$$ x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a} $$
-
-You can also use the `highlight` tag to highlight code (useful for .html). For example:
-
-{% highlight python %}
-def print_hi(name)
-  puts "Hi, #{name}"
-end
-print_hi('Tom')
-#=> prints 'Hi, Tom' to STDOUT.
-{% endhighlight %}
-
-Or just use the triple backticks for code blocks (for .md files):
-
-```python
-def print_hi(name)
-  puts "Hi, #{name}"
-end
-print_hi('Tom')
-#=> prints 'Hi, Tom' to STDOUT.
-```
-
-You can also add a table of contents to your post by setting `show_toc: true` in the front matter. The table of contents will be generated based on the headings in your post.
-
-## Utilities (includes)
-
-### Gallery
-You can include a gallery in any page by using the `gallery.html` include. The include takes two arguments: `images` and `n_columns`. The `images` argument is an array of image paths (or URLs) that you want to include in the gallery, defined in the front matter. The `n_columns` argument is the number of columns you want the gallery to have. Here's an example of how you might include a gallery in a page:
-
-```markdown
-{% include gallery.html images=page.gallery_experiments n_columns=2 caption="Robots in the vineyard in Rome" %}
-```
-
-### Figures
-
-You can include figures (image) in your content by using the `figure.html` include. This makes it centered and responsive, of appropriate sizes. The include takes four arguments: `src`, `width`, `alt`, and `caption`. The `src` argument is the path to the image you want to include. The `width` argument is the width of the image in pixels. The `alt` argument is the alt text for the image. The `caption` argument is an optional caption for the image. Here's an example of how you might include a figure in a page:
-
-```markdown
-{% include figure.html src="/assets/images/pic.png" width="600" alt="picture" caption="Optional caption" %}
-```
-
-### Linking local files and images in your content
-
-#### The easy way
-
-You can use the following liquid tag to use the `include` fix_link.html, which will append whatever is necessary to the link. For example:
+In the page body, refer to media by file name:
 
 ```html
-<a href="{% include fix_link.html link='/assets/files/student_projects/Brochure_thesis_jam.pdf' %}">
+<figure>
+  <img src="teaser.jpg" alt="What the image shows">
+  <figcaption>Caption.</figcaption>
+</figure>
 
-<img class="img-fluid" src="{% include fix_link.html link='/assets/images/msc_projects/msc_project_template/hackathon-team.jpg' %}" alt="Image 1">
+<figure>
+  <video src="real_run.mp4" poster="real_run.poster.jpg" width="1280" height="720" data-autoplay controls loop muted playsinline preload="none"></video>
+  <figcaption>Caption.</figcaption>
+</figure>
 
-<img class="img-fluid" src="{% include fix_link.html link=image_variable.link %}" alt="Image 1">
-```
-#### The manual way
-
-Github pages makes it a bit annoying to link to local (without the http://...) files and images. The easiest way is to put them in the `assets/...` directory. Then you can link to them using the `site.baseurl` variable to append to the path. For example, to link to the file `assets/files/publications/liu2022ral.pdf`, you can use the following markdown:
-
-```markdown
-[Link to the PDF]({{ '/assets/files/publications/23-wilde-ral.pdf' | relative_url}})
-```
-[Link to the PDF]({{ '/assets/files/publications/23-wilde-ral.pdf' | relative_url}})
-
-Images are the same (put the html in the markdown file as is), just append the `relative_url` variable:
-
-```html
-<div class="image-div mb-3 d-flex justify-content-center">
-    <img src="{{ '/assets/images/cover_pic_4x3.png' | relative_url}}" class="img-fluid" width="600" alt="lab">
+<div class="cols center" style="--cols: 7fr 5fr">   <!-- two columns on wide screens, stacked on phones -->
+  <div>…</div>
+  <div>…</div>
 </div>
 ```
+
+In Markdown, the same with includes:
+
+```liquid
+{% include "partials/figure.liquid", src: "photo.jpg", alt: "What it shows", caption: "Optional", width: 600 %}
+{% include "partials/gallery.liquid", items: gallery, columns: 2, caption: "Optional" %}
+```
+
+Useful classes: `wide` (use the full width), `small` (smaller text), `caption`, `eyebrow`,
+`first-on-mobile` (show this column first on phones), `table-wrap` (scroll a wide table).
+Math: `$…$` inline and `$$…$$` display. MathJax loads only on pages that contain math.
+
+## Add a publication
+
+Add the entry to `_data/publications.bib`. Paste the BibTeX from Google Scholar, IEEE or arXiv, then add
+the site-only fields. The copy button gives visitors the entry without these fields.
+
+```bibtex
+@inproceedings{matoses2026example,
+  title     = {Paper Title},
+  author    = {Matoses Gimenez, Andreu and Other, Author},
+  booktitle = {IEEE International Conference on Robotics and Automation (ICRA)},
+  year      = {2026},
+  month     = may,
+  url       = {https://ieeexplore.ieee.org/document/...},
+  eprint    = {2601.01234},
+  archiveprefix = {arXiv},
+  image    = {research/example/cover.poster.jpg},
+  website  = {/example/},
+  code     = {https://github.com/...},
+  abstract = {...}
+}
+```
+
+The header of `publications.bib` lists all site-only fields (`pubtype`, `venue`, `image`, `pdf`,
+`website`, `code`, `video`, `award`, `abstract`, `hidden`, ...). The entry type sets the group:
+`@article` = journal, `@inproceedings` = conference, `@mastersthesis`/`@phdthesis` = thesis,
+`@misc` = preprint. Use `pubtype = {workshop}` for a workshop paper.
+
+**Submitted papers.** Keep the entry as `@misc` with `hidden = {true}` until it is public. When it is on
+arXiv, add `eprint` and `archiveprefix = {arXiv}`, and delete `hidden`. The paper then shows as a
+preprint with an arXiv link. When it is accepted, change it to `@inproceedings` (or `@article`) with
+the venue.
+
+## Edit the homepage, news, menu and contact links
+
+- Bio: `content/index.html`.
+- News: `_data/news.yaml`, newest first, at most 3 (they show in one row). Put the text in quotes if it contains `: `.
+- Menu: `_data/navigation.yaml`. Contact icons: `_data/socials.yaml`.
+- Name, description, email: `_data/site.json`.
+
+## Add a post
+
+Make `content/posts/YYYY-MM-DD-title/index.md` with `title`, `date` and (optional) `description` and
+`author`. A table of contents is added when the post has two or more `##` headings. Then uncomment the
+Posts entry in `_data/navigation.yaml`.
+
+## Images and videos
+
+- **Images:** put them in the page folder at full quality. The build makes AVIF/WebP copies in several
+  sizes, adds width and height, and lazy-loads them. Always write an `alt` text.
+- **Videos:** use H.264 MP4. Browsers show a gray box for some phone exports (high level or a bogus
+  frame rate), so re-encode with the script:
+
+  ```shell
+  scripts/media.sh web    in.mp4 out.mp4          # page video: max 1280 px, 30 fps, web-safe
+  scripts/media.sh cover  in.mp4 cover.mp4        # homepage card loop: max 640 px, no audio (aim for 4:3)
+  scripts/media.sh poster cover.mp4 1             # still frame at 1 s -> cover.poster.jpg
+  ```
+
+  **Every video `X.mp4` needs a poster `X.poster.jpg`** next to it (`scripts/media.sh poster X.mp4`).
+  The poster shows before the clip plays and sizes the box; `cover.poster.jpg` is also the link preview.
+  The figure and gallery includes add the poster by this name; in HTML write `poster="X.poster.jpg"`.
+  Add `width` and `height` to `<video>` (from `ffprobe`) so the page does not jump while it loads.
+  Clips with `data-autoplay` play only while they are on screen, and download only then.
+- Keep the high-resolution originals outside the repository. `media-originals/` is ignored by git.
+
+## Old URLs
+
+When a page moves, add the old path to `_data/redirects.yaml`. The build makes a small page that
+forwards visitors and keeps the link preview.

@@ -1,0 +1,19 @@
+---
+title: Posts
+permalink: /posts/
+description: Posts, notes and short write-ups on robotics and machine learning by Andreu Matoses Gimenez.
+---
+<p>A collection of posts, thoughts, and other notes.</p>
+{%- if collections.posts.length == 0 %}
+<p>Nothing yet. Expect some in the future.</p>
+{%- else %}
+<ul class="post-list">
+  {%- for post in collections.posts %}
+  <li>
+    <h2><a href="{{ post.url }}">{{ post.data.title }}</a></h2>
+    <p class="meta"><time datetime="{{ post.date | isoDate }}">{{ post.date | date: "%B %-d, %Y" }}</time> · {{ post.data.author | default: site.author }}</p>
+    {%- if post.data.description %}<p>{{ post.data.description }}</p>{% endif %}
+  </li>
+  {%- endfor %}
+</ul>
+{%- endif %}

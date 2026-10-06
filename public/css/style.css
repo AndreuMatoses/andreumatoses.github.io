@@ -297,9 +297,12 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 
 /* ---------- publications ---------- */
 
-.pub-year h2 { border-bottom: 2px solid var(--accent); padding-bottom: 0.25rem; }
+/* Year: small label with a thin line to its right. */
+.pub-year h2 { display: flex; align-items: center; gap: 0.75rem; font-size: 0.95rem; font-weight: 650; margin: 1.75rem 0 0.1rem; }
+.pub-year h2::after { content: ""; flex: 1; border-top: 1px solid var(--rule); }
 .pubs { list-style: none; padding: 0; }
-.pub { display: grid; gap: 1.25rem; padding: 1rem 0; border-bottom: 1px solid var(--rule); }
+.pub { display: grid; gap: 1.25rem; padding: 0.9rem 0; border-bottom: 1px solid var(--rule); }
+.pub:last-child { border-bottom: 0; }
 .pubs li + li { margin: 0; }
 .pub-thumb { display: none; }
 @media (min-width: 640px) {

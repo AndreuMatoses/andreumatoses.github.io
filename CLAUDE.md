@@ -36,7 +36,8 @@ _includes/layouts/     base.liquid -> page | project | post
 _includes/partials/    seo, header, footer, socials, project-card, publication, bibtex, figure, gallery
 _includes/icons/       SVGs inlined by the `icon` filter (Bootstrap Icons names, `bi-` prefix optional)
 content/               input dir. research/<slug>/ = one project (page + media); posts/<dated>/
-public/                copied to the site root: css/style.css, js/site.js, fonts/, favicon.png
+public/                copied to the site root: css/style.css, js/site.js, fonts/, site icons
+                       (favicon.svg with its own dark mode, favicon.ico 32 px, apple-touch-icon.png 180 px)
 scripts/media.sh       ffmpeg recipes (web, cover, poster)
 tests/                 serve.js (GitHub-Pages-like static server), pages.js, site.spec.js, renders.spec.js
 ```

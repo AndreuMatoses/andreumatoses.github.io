@@ -49,7 +49,7 @@ _data/
   socials.yaml              contact icons
   redirects.yaml            old URLs that forward to new ones
 _includes/                  layouts, partials (figure, gallery, card, ...) and icons
-public/                     copied as-is: css/style.css, js/site.js, fonts, favicon
+public/                     copied as-is: css/style.css, js/site.js, fonts, site icons (favicon.svg/.ico, apple-touch-icon.png)
 scripts/media.sh            ffmpeg recipes for videos
 tests/                      Playwright tests and renders
 ```

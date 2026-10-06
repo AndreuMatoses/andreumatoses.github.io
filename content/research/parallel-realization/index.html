@@ -34,9 +34,9 @@ links:
     - name: Poster
       icon: bi-easel
       url: conference_poster.jpg
-    - name: Code (WIP)
+    - name: Code (MuJoCo Warp)
       icon: bi-github
-      url: ""
+      url: "https://github.com/AndreuMatoses/tamp_ce_mjwarp"
 note: "Published in IEEE Robotics and Automation Letters (RA-L). Presented at IROS 2026."
 ---
 
@@ -69,7 +69,8 @@ note: "Published in IEEE Robotics and Automation Letters (RA-L). Presented at IR
   <li><strong>Result:</strong> After convergence, deploy the best feasible plan using the same low-level controllers.</li>
 </ol>
 <p class="caption">* We use geometric fabrics for fast, GPU-parallelizable motion of the base and arm with end-effector pose control and collision avoidance.
-  For mobile base path planning only, we use A* with a parallelized GPU waypoint tracking algorithm. The simulation is implemented in NVIDIA Isaac Gym.</p>
+  For mobile base path planning only, we use A* with a parallelized GPU waypoint tracking algorithm. The simulation is implemented in NVIDIA Isaac Gym.
+  The released code is a port of the method to MuJoCo Warp; its README lists the differences.</p>
 
 <h2>P1: Pick and Place with an obstacle in the middle</h2>
 <div class="cols">

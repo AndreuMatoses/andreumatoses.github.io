@@ -44,7 +44,6 @@
   --teal: light-dark(#0f766e, #4fd1c5);
   --red: light-dark(#b42318, #ff7b72);
 
-  --prose: 68ch;
   --wide: 1120px;
   --gutter: 1rem;
   --radius: 6px;
@@ -128,27 +127,14 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 }
 .skip-link:focus { top: 0.5rem; }
 
-/* ---------- page grid: text column, wider column for figures ---------- */
+/* ---------- page column: text, figures and cards share one width ---------- */
 
 .flow {
-  display: grid;
-  grid-template-columns:
-    [full-start] minmax(var(--gutter), 1fr)
-    [wide-start] minmax(0, calc((var(--wide) - var(--prose)) / 2))
-    [prose-start] min(var(--prose), 100% - 2 * var(--gutter)) [prose-end]
-    minmax(0, calc((var(--wide) - var(--prose)) / 2)) [wide-end]
-    minmax(var(--gutter), 1fr) [full-end];
+  width: min(var(--wide), 100% - 2 * var(--gutter));
+  margin-inline: auto;
   padding-block: clamp(1.5rem, 1rem + 2vw, 3rem) 3rem;
 }
-.flow > * { grid-column: prose; min-width: 0; }
-.flow > figure,
-.flow > .cols,
-.flow > .wide,
-.flow > .table-wrap,
-.flow > .math,
-.flow > .paper-header,
-.flow-wide > * { grid-column: wide; }
-.flow > figure[style*="max-width"] { justify-self: center; width: 100%; }
+.flow > figure[style*="max-width"] { margin-inline: auto; }
 
 /* ---------- header / footer ---------- */
 
@@ -416,7 +402,7 @@ figure > .cols { margin: 0; }
 .steps { list-style: none; padding: 0; counter-reset: step; display: grid; gap: 1rem; }
 .steps li { counter-increment: step; margin: 0; }
 .steps li::before { content: counter(step) "."; font-weight: 700; margin-right: 0.4rem; }
-@media (min-width: 760px) { .flow > .steps { grid-column: wide; grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 760px) { .steps { grid-template-columns: repeat(3, 1fr); } }
 
 .hl-amber { color: var(--amber); font-weight: 600; }
 .hl-teal { color: var(--teal); font-weight: 600; }

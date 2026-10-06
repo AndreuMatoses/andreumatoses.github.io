@@ -61,8 +61,11 @@ tests/                 serve.js (GitHub-Pages-like static server), pages.js, sit
   follows the system setting; the sun/moon button in the header sets `data-theme` on `<html>` (stored
   in localStorage, applied by an inline script in `base.liquid` before paint), which sets `color-scheme`.
   Keep new colors as tokens with both values.
-- Page grid `.flow`: text in a ~68ch column, figures/`.cols`/`.wide`/tables in a 1120 px column.
-  `.flow-wide` (home, publications) puts everything in the wide column.
+- Page column `.flow`: text, figures, cards and the header/footer lines all share one column of at
+  most 1120 px (`--wide`), so every left and right edge lines up.
+  **To revisit (decided 2026-10-06):** body text now runs up to ~110 characters per line on research
+  pages and posts (comfortable reading is ~60–80). Rendered alternatives: a 900 px page column (~91
+  chars, everything still aligned) or larger body text on wide screens (~97 chars).
 - Fonts: Source Serif 4 (body) + Inter (headings), self-hosted variable WOFF2 (latin subset) in
   `public/fonts/`, OFL licenses next to them.
 - Theme: black borders/lines (`--accent`), brutalist cards with a light gray offset shadow

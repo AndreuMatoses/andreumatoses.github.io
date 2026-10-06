@@ -12,25 +12,36 @@
 % Standard fields that also make links: url (shown as "paper"), eprint + archiveprefix = {arXiv}.
 
 @misc{matoses2026flowskillwm,
-  title   = {Flow Policies as Actions of Skill-Level World Models: Learned and Symbolic Abstractions for Long-Horizon Planning},
-  author  = {Matoses Gimenez, Andreu and Papuc, Andrei-Carlo and Pek, Chris and Alonso-Mora, Javier},
-  year    = {2026},
-  month   = sep,
-  url     = {https://andreumatoses.github.io/flow-skill-wm/},
-  venue   = {Submitted to the IEEE International Conference on Robotics and Automation (ICRA) 2027},
+  title         = {Flow Policies as Actions of Skill-Level World Models: Learned and Symbolic Abstractions for Long-Horizon Planning},
+  author        = {Matoses Gimenez, Andreu and Papuc, Andrei-Carlo and Pek, Chris and Alonso-Mora, Javier},
+  year          = {2026},
+  month         = oct,
+  eprint        = {2610.04767},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.RO},
+  url           = {https://arxiv.org/abs/2610.04767},
+  venue   = {arXiv preprint, submitted to ICRA 2027},
+  pdf     = {https://arxiv.org/pdf/2610.04767},
   website = {/flow-skill-wm/},
-  hidden  = {true}
+  poster  = {/flow-skill-wm/conference_poster.jpg},
+  image   = {research/flow-skill-wm/cover.poster.jpg},
+  abstract = {Latent world models enable robots to plan by predicting the consequences of actions. Planning long tasks with control-rate actions requires many prediction steps, which enlarges the search space and accumulates error. Skill-level actions shorten these sequences, but a symbolic skill vocabulary requires domain knowledge and labeled demonstrations. We construct skill-level actions from the inputs of a flow-matching policy trained on demonstrations segmented into complete skills. The policy maps a noise seed and an observation, optionally with a code or label, to a complete skill execution, so one execution is one world-model transition. On this mechanism we propose four action abstractions with increasing task knowledge: a compressed seed, two discrete codes learned from the demonstrations, and a symbolic label. We evaluate them with a common world-model training procedure and planning framework on simulated block rearrangement tasks that require up to 14 sequential skills. The symbolic label succeeds in over 90% of the tasks that require up to six skills and degrades beyond. Without any label, an object-centric learned code matches it on single-skill tasks and retains half to three quarters of its success on tasks of two to five skills. Ablations attribute much of the label's advantage to its planner knowing which actions are applicable, rather than to the label itself. Beyond six skills the search, not the world model, limits success. Project page: https://andreumatoses.github.io/research/flow-skill-wm}
 }
 
 @misc{redondo2026hybridflow,
-  title   = {Learning Task and Motion Plans from Real Demonstrations with Hybrid Flow Matching},
-  author  = {Redondo Garcia, Zuleika and Matoses Gimenez, Andreu and Alonso-Mora, Javier},
-  year    = {2026},
-  month   = sep,
-  url     = {https://andreumatoses.github.io/hybrid-flow-planning/},
-  venue   = {Submitted to the IEEE International Conference on Robotics and Automation (ICRA) 2027},
+  title         = {Learning Task and Motion Plans from Real Demonstrations with Hybrid Flow Matching},
+  author        = {Redondo Garcia, Zuleika and Matoses Gimenez, Andreu and Alonso-Mora, Javier},
+  year          = {2026},
+  month         = oct,
+  eprint        = {2610.04771},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.RO},
+  url           = {https://arxiv.org/abs/2610.04771},
+  venue   = {arXiv preprint, submitted to ICRA 2027},
+  pdf     = {https://arxiv.org/pdf/2610.04771},
   website = {/hybrid-flow-planning/},
-  hidden  = {true}
+  image   = {research/hybrid-flow-planning/cover.poster.jpg},
+  abstract = {Long-horizon mobile manipulation requires a task plan and the motion that executes it. Generative planners trained on demonstration produce both in one pass, requiring neither a symbolic domain nor search. To date, however, they have relied on thousands of scripted demonstrations of fixed-base arms and executed open loop. This paper presents a hybrid flow matching planner: a single network generates the symbolic plan with masked discrete flow matching and the motion trajectory with continuous flow matching. Unlike prior generative planners, we aim to learn from a much smaller set of demonstrations and to execute the plan in closed loop. Two properties of the data compensate for the small dataset. A demonstration resumed from any of its intermediate actions is itself a demonstration, which multiplies the training samples and enables replanning after every action. Objects of the same kind are interchangeable, which turns demonstrations of one goal into demonstrations of every permuted goal. Our base implementation produces valid plans on 68% of held-out scenes; a training and generation scheme for the discrete plan raises this to 76%, and replanning after every action raises the task completion rate from 40% to 53% in a kinematic simulation. The planner matches the task completion rate of motion-only flow matching policies while additionally providing the symbolic plan, and it outperforms previous hybrid diffusion formulations on both task completion and plan validity. We validate the planner on a real mobile manipulator. Videos and project page: https://andreumatoses.github.io/research/hybrid-flow-planning}
 }
 
 @article{matoses2026crossentropy,

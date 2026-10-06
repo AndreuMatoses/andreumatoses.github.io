@@ -110,10 +110,9 @@ function author(name) {
 
 function toPublication(entry) {
   const f = entry.fields;
-  const links = {
-    ...f,
-    arxiv: f.eprint && (f.archiveprefix || "arxiv").toLowerCase() === "arxiv" ? `https://arxiv.org/abs/${f.eprint}` : undefined,
-  };
+  const arxiv = f.eprint && (f.archiveprefix || "arxiv").toLowerCase() === "arxiv" ? `https://arxiv.org/abs/${f.eprint}` : undefined;
+  // For an arXiv preprint `url` is usually the arXiv page too: show that link once, as "arxiv".
+  const links = { ...f, arxiv, url: f.url === arxiv ? undefined : f.url };
   const thesisVenue = entry.type.endsWith("thesis") &&
     `${entry.type === "phdthesis" ? "PhD thesis" : "Master's thesis"}, ${f.school}`;
   return {

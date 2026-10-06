@@ -90,6 +90,8 @@ tests/                 serve.js (GitHub-Pages-like static server), pages.js, sit
 
 ## Git workflow
 
-- Small fixes (content, typos, small tweaks) can go **directly to `main`**. Pushing to `main` deploys.
-- Create a branch and PR only for **significant** changes (layouts, structure, design).
+- Commit and push **directly to `main`** by default: content, fixes, and style or layout tweaks (CSS,
+  templates, design adjustments the user has approved). Pushing to `main` deploys after the tests pass.
+- Do **not** open a PR for small changes. Use a branch and PR only for a large restructuring (for example
+  a framework change or a reorganization of many files), or when the user asks for one.
 - **Batch edits into one themed commit**; push when a coherent chunk is done, not per file.

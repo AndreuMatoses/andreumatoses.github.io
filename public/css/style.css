@@ -103,6 +103,8 @@ img, video, svg { max-width: 100%; }
 img, video { height: auto; display: block; }
 video { width: 100%; background: #000; border-radius: 4px; }
 picture { display: contents; }
+/* With display: contents, the <source> elements of a picture would otherwise become grid items. */
+picture > source { display: none; }
 
 code, pre { font-family: var(--font-mono); font-size: 0.875em; }
 :not(pre) > code { background: var(--surface); padding: 0.1em 0.3em; border-radius: 3px; }

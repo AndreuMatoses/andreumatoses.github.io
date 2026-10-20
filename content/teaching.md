@@ -6,7 +6,7 @@ description: Master thesis supervision and teaching by Andreu Matoses Gimenez at
 
 ## Master thesis supervision
 
-If you are interested in a master thesis or research assignment in task planning, task assignment or multi-agent systems in general, feel free to send me a message, or contact Javier Alonso-Mora.
+I am currently supervising students and cannot take on any new master thesis or research assignment students. If you are interested in a thesis in task planning, task assignment or multi-agent systems, please contact Javier Alonso-Mora directly.
 
 You can check our group website for a full list of master theses that are currently offered: [AMR lab](https://autonomousrobots.nl/education/) (often out of date).
 

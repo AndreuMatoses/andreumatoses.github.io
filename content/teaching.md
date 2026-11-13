@@ -12,6 +12,7 @@ You can check our group website for a full list of master theses that are curren
 
 ### Supervised MSc students
 
+- **October 2026:** Adithya Abhilash — *Diffusion Policies for Collaborative Actions in Mobile Manipulators.* Co-supervised with [Saray Bakker](https://saraybakker1.github.io/).
 - **October 2026:** Zuleika M. Redondo García — *Task and Motion Planning with Flow Matching for Coupled Mobile Manipulation.*
 - **August 2025:** Akansha Mukherjee — *Handling Interaction Uncertainty in Decentralized Multi-Agent Task and Motion Planning.*
 - **July 2025:** Jakob Bichler — *SADCHER: Scheduling using Attention-based Dynamic Coalitions of Heterogeneous Robots in Real-Time.*
